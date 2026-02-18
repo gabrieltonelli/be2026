@@ -1,0 +1,39 @@
+{
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "skip": "Saltar",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "finish": "Finalizar",
+    "close": "Cerrar",
+    "ok": "Aceptar",
+    "yes": "Sí",
+    "no": "No",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información",
+    "selectLanguage": "Seleccionar idioma",
+    "settings": "Configuración",
+    "profile": "Perfil",
+    "logout": "Cerrar sesión",
+    "notifications": {
+        "title": "Notificaciones",
+        "empty": "No tienes notificaciones",
+        "markAsRead": "Marcar como leído"
+    },
+    "errors": {
+        "generic": "Ocurrió un error inesperado",
+        "networkError": "Error de conexión",
+        "notFound": "No encontrado",
+        "unauthorized": "No autorizado",
+        "forbidden": "Acceso denegado"
+    }
+}

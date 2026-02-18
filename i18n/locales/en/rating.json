@@ -1,0 +1,26 @@
+{
+    "title": "Rate Contacts",
+    "subtitle": "Swipe to navigate between contacts and attributes",
+    "rateAttribute": "How would you rate {{name}} in this aspect?",
+    "skipContact": "Skip contact",
+    "nextContact": "Next contact",
+    "progress": "{{current}} of {{total}} contacts",
+    "options": {
+        "veryNegative": "Very negative",
+        "negative": "Negative",
+        "neutral": "Neutral",
+        "positive": "Positive",
+        "veryPositive": "Very positive"
+    },
+    "ambits": {
+        "laboral": "Work",
+        "politico": "Political",
+        "deportivo": "Sports",
+        "social": "Social",
+        "salud": "Health",
+        "estetico": "Aesthetic",
+        "artistico": "Artistic"
+    },
+    "saved": "Rating saved",
+    "error": "Error saving rating"
+}

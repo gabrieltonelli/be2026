@@ -1,0 +1,26 @@
+{
+    "title": "Calificar Contactos",
+    "subtitle": "Desliza para navegar entre contactos y atributos",
+    "rateAttribute": "¿Cómo calificarías a {{name}} en este aspecto?",
+    "skipContact": "Saltar contacto",
+    "nextContact": "Siguiente contacto",
+    "progress": "{{current}} de {{total}} contactos",
+    "options": {
+        "veryNegative": "Muy negativo",
+        "negative": "Negativo",
+        "neutral": "Neutral",
+        "positive": "Positivo",
+        "veryPositive": "Muy positivo"
+    },
+    "ambits": {
+        "laboral": "Laboral",
+        "politico": "Político",
+        "deportivo": "Deportivo",
+        "social": "Social",
+        "salud": "Salud",
+        "estetico": "Estético",
+        "artistico": "Artístico"
+    },
+    "saved": "Calificación guardada",
+    "error": "Error al guardar calificación"
+}

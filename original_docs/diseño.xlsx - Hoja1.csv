@@ -1,0 +1,62 @@
+Contacts,Categories,Attributes,Ambits,UserContactAttributePreferences,UserContactCategoryPreferences,Users,Configurations,UserContactGroups,UserGroups,ContactTypes,ContactTypeCategories,WorkspaceConfigurations,UserAmbitPreferences
+id,id,id,id,permite gestionar cuales Atributos son los favoritos y/o seguidos por el usuario,id,id,maestro de parametros de configuracion,id,id,"Define si el tipo de contacto es una persona y en tal caso un familiar, empleado o jefe o si es una cosa y en tal caso un producto u otra cosa ó un lugar y en tal caso un punto turistico, un pais o un servicio, etc. De esa manera permite saber como tratarlo y cuales categorias son mas apropiadas mostrar, por ende cuales atributos para calificar","esta atado a la tabla de la izquierda. Permite asignar todas las categorias que esten asociadas al tipo de contacto. Ejemplo: un contacto de tipo Persona esta relacionado a las categorias Amor, Amistad, etc, etc.",,"Se usa para configurar durante el wizard, cuales ambitos le interesa navegar al usuario"
+name,prefix,category_id,prefix,id,user_id,name,id,user_id,user_id,id,id,id,id
+username,name,name_m,name,user_id,contact_id,username,name,contact_id,name,name,contact_type_id,workspace_id,user_id
+social_network_id,detail,name_f,detail,contact_id,category_Id,social_network_id,detail,user_group_id,detail,parent_contact_type_id,category_id,configuration_id,ambit_id
+email,ambit_id,detail,icon_url,attribute_id,is_favorite,email,"possible_values (json{tipo_dato,valor})",created_at,created_at,icon_url,created_at,value,is_favorite
+detail,icon_url,connector,backgrund_url,is_favorite,is _following,detail,created_at,updated_at,updated_at,created_at,updated_at,created_at,created_at
+birth_date,backgrund_url,antonym_m,color,is _following,is_ignored,birth_date,updated_at,status_id,status_id,updated_at,status_id,updated_at,updated_at
+avatar_url,color,antonym_f,created_at,is_ignored,created_at,company,status_id,workspace_id,workspace_id, ,,status_id,status_id
+company,created_at,synonyms_m,updated_at,created_at,updated_at,city,,,,,,,workspace_id
+city,updated_at,synonyms_f,status_id,updated_at,status_id,job,,,,,,,
+job,status_id,color,,status_id,workspace_id,gender_id,,,,,,,
+gender_id,,created_at,,workspace_id,,avatar_url,,,,,,,UserAttributePreferences
+created_at,,updated_at,,,,created_at,,,,,,,permite gestionar cuales Atributos son los favoritos y/o seguidos por el usuario
+updated_at,,status_id,,,,updated_at,,,,,,,id
+status_id,,,,,,status_id,,,,,,,user_id
+,,,,,    ,password,,,,,,,
+,,,,,,rols,,,,,,,attribute_id
+,,,,,,bearer,,,,,,,is_favorite
+,,,,,,count,,,,,,,is _following
+,,,,,,user_type_id,,,,,,,is_ignored
+,,,,,,verified_account (date),,,,,,,created_at
+,,,,,,,,,,,,,updated_at
+,,,,,,,,,,,,,status_id
+UserContacts,,Workspaces,UserWorkspaces,UserContactAttributeCalifications,UserAttributeCalificationLog,UserContactAttributeCalificationLog,UserLog,UserConfiguratios,SocialNetworks,UserSocialNetworks,UserTypes,,workspace_id
+id,,id,para permitir definir que usuarios pueden acceder a areas de trabajo empresariales (una empresa que quiere tener su sistema be exclusivo),mantiene la calificacion actual de un user a un contacto y saber el estado del visto o no visto (palomitas como whatsapp) esta tabla debe ser distinta a userContactsAttributesPreferences dado que puede querer seguir o poner en favorito un atributo que no desea calificar,"Permite llevar un historico de como fueron las calificaciones del usuario, de modo de poder reconstruir una linea de tiempo del cambio de opinion, se deberia escribir un registro cada 24hs","Permite llevar un historico de como se fue opinando sobre un contacto, de modo de poder reconstruir una linea de tiempo del cambio de opinion",id,configuracion establecida por los usuarios,"redes sociales asociadas a los users y contacts (facebook, twitter, etc)",vinculaciones que permiten identificar que un usuario de X red es el mismo que el de la red Y,id,,
+user_id,,name,id,id,id,id,user_id,id,id,id,name,,
+contact_id,,logo_url,user_id,user_id,user_id,user_id,typeLog,user_id,name,user_id,parent_user_type_id,,
+is_favorite,,detail,workspace_id,contact_id,attribute_id,contact_id,action,configuration_id,url,username,icon_url,,
+is _following,,created_at,grant,attribute_id,calification,attribute_id,detail,value,icon_class,social_network_id,created_at,,
+is_ignored,,updated_at,created_at,calification,created_at,calification,created_at,created_at,created_at,created_at,updated_at,,
+contact_type_id,,status_id,updated_at,sended_at,status_id,created_at,status_id,updated_at,updated_at,updated_at,status_id,,
+created_at,,,status_id,received_at,workspace_id,status_id,workspace_id,status_id,status_id,status_id,,,
+updated_at,,,,readed_at,,workspace_id,,workspace_id,,workspace_id,,,
+status_id,,,,created_at,,,,,,,,,
+workspace_id,,,,updated_at,,,,,,,,,
+,,,,status_id,,,,,,,,,
+Referencias,,,,workspace_id,,,,,,,,,
+,Para soportar Workspaces empresariales,,,,,,,,,,,,
+,Campos comunes a todas las entidades,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+"Pensar como mantener las calificaciones de un user que desinstalo la app y luego vuelve a instalarla. Se deben mantener sus calificaciones??? solucion: cuando vuelve miro si ya existe ese username + socialnetwor en tabla users, si existe no lo creo y mantengo id",,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+opcion de resetar todas mis calificaciones o la de un rubro o la de un worksapace o la de una categ o la de un contact,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+que pasa si desasocia una socialnetwork,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+"""schemasapi"": [ { ""idschema"": ""2"", ""id"": 1, ""type"": ""get"", ""operation"": ""findandcountwithoptions"", ""path"": """", ""field"": """", ""fields"": [ ""id"", ""name"", ""username"", ""idSocialNetwork"", ""email"", ""avatarUrl"", ""company"", ""city"", ""job"", ""gender"", ""createdAt"", ""updatedAt"", ""statusId"" ], ""security"": true, ""roles"": ""admin"", ""extfiles"": """", ""options"": """", ""parameters"": [] }, { ""id"": 2, ""type"": ""patch"", ""operation"": """", ""path"": """", ""field"": """", ""security"": true, ""roles"": ""admin"", ""extfiles"": """", ""options"": """", ""parameters"": [] }, { ""id"": 3, ""type"": ""delete"", ""operation"": """", ""path"": """", ""field"": """", ""security"": true, ""roles"": ""admin"", ""extfiles"": """", ""options"": """", ""parameters"": [] }, { ""id"": 4, ""type"": ""post"", ""operation"": """", ""path"": """", ""field"": """", ""security"": true, ""roles"": ""admin"", ""extfiles"": """", ""options"": """", ""parameters"": [] }, { ""idschema"": ""2"", ""id"": 5, ""type"": ""get"", ""operation"": ""getall"", ""path"": """", ""field"": """", ""fields"": [ ""id"", ""name"", ""username"", ""idSocialNetwork"", ""email"", ""avatarUrl"", ""company"", ""city"", ""job"", ""gender"", ""createdAt"", ""updatedAt"", ""statusId"" ], ""security"": true, ""roles"": ""admin"", ""extfiles"": """", ""options"": """", ""parameters"": [] }, { ""idschema"": ""2"", ""id"": 6, ""type"": ""get"", ""operation"": ""getone"", ""path"": """", ""field"": """", ""fields"": [ ""id"", ""name"", ""username"", ""idSocialNetwork"", ""email"", ""avatarUrl"", ""company"", ""city"", ""job"", ""gender"", ""createdAt"", ""updatedAt"", ""statusId"" ], ""security"": true, ""roles"": ""admin"", ""extfiles"": """", ""options"": """", ""parameters"": [] } ],",,,,,,,,,,,,,

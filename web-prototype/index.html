@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Be - Descubre tu verdadera esencia">
+    <meta name="theme-color" content="#0f172a">
+    <title>Be - We Are Perceptions</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash" class="screen active">
+        <canvas id="particles"></canvas>
+        <div class="splash-content">
+            <div class="logo-container">
+                <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="url(#logoGradient)" stroke-width="4" opacity="0.3"/>
+                    <text x="100" y="130" font-family="Outfit" font-size="80" font-weight="900" fill="url(#logoGradient)" text-anchor="middle">Be</text>
+                </svg>
+            </div>
+            <h1 class="splash-title glow-text">We Are Perceptions</h1>
+            <p class="splash-message">Aprovisionando todo para una nueva aventura...</p>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login" class="screen">
+        <div class="login-content">
+            <div class="logo-small">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradientSmall" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <text x="100" y="130" font-family="Outfit" font-size="80" font-weight="900" fill="url(#logoGradientSmall)" text-anchor="middle">Be</text>
+                </svg>
+            </div>
+            
+            <h2 class="screen-title">Descubre tu esencia</h2>
+            <p class="screen-subtitle">Conecta con tus redes sociales para comenzar</p>
+            
+            <div class="social-buttons">
+                <button class="btn-social btn-google" onclick="loginWith('google')">
+                    <svg class="btn-icon" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span>Continuar con Google</span>
+                </button>
+                
+                <button class="btn-social btn-facebook" onclick="loginWith('facebook')">
+                    <svg class="btn-icon" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>Continuar con Facebook</span>
+                </button>
+                
+                <button class="btn-social btn-linkedin" onclick="loginWith('linkedin')">
+                    <svg class="btn-icon" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    <span>Continuar con LinkedIn</span>
+                </button>
+                
+                <button class="btn-social btn-more" onclick="showMoreNetworks()">
+                    <svg class="btn-icon" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                    </svg>
+                    <span>Más redes sociales</span>
+                </button>
+            </div>
+            
+            <p class="login-disclaimer">
+                Al continuar, aceptas nuestros <a href="#" class="link">Términos</a> y <a href="#" class="link">Política de Privacidad</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Wizard: Step 1 - Ambitos -->
+    <div id="wizard-ambits" class="screen">
+        <div class="wizard-header">
+            <div class="wizard-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 33%"></div>
+                </div>
+                <span class="progress-text">Paso 1 de 3</span>
+            </div>
+        </div>
+        
+        <div class="wizard-content">
+            <h2 class="screen-title">¿Qué aspectos te interesan?</h2>
+            <p class="screen-subtitle">Selecciona los ámbitos donde quieres compartir y recibir feedback</p>
+            
+            <div class="ambits-grid">
+                <div class="ambit-card" data-ambit="laboral" onclick="toggleAmbit(this)">
+                    <div class="ambit-icon">💼</div>
+                    <div class="ambit-name">Laboral</div>
+                    <div class="ambit-check">✓</div>
+                </div>
+                
+                <div class="ambit-card" data-ambit="social" onclick="toggleAmbit(this)">
+                    <div class="ambit-icon">👨‍👩‍👧</div>
+                    <div class="ambit-name">Social</div>
+                    <div class="ambit-check">✓</div>
+                </div>
+                
+                <div class="ambit-card" data-ambit="deportivo" onclick="toggleAmbit(this)">
+                    <div class="ambit-icon">🏃</div>
+                    <div class="ambit-name">Deportivo</div>
+                    <div class="ambit-check">✓</div>
+                </div>
+                
+                <div class="ambit-card" data-ambit="salud" onclick="toggleAmbit(this)">
+                    <div class="ambit-icon">🏥</div>
+                    <div class="ambit-name">Salud</div>
+                    <div class="ambit-check">✓</div>
+                </div>
+                
+                <div class="ambit-card" data-ambit="estetico" onclick="toggleAmbit(this)">
+                    <div class="ambit-icon">🎨</div>
+                    <div class="ambit-name">Estético</div>
+                    <div class="ambit-check">✓</div>
+                </div>
+                
+                <div class="ambit-card" data-ambit="artistico" onclick="toggleAmbit(this)">
+                    <div class="ambit-icon">🎭</div>
+                    <div class="ambit-name">Artístico</div>
+                    <div class="ambit-check">✓</div>
+                </div>
+            </div>
+            
+            <button class="btn-primary btn-large" onclick="nextWizardStep('workspace')">
+                Continuar
+                <svg class="btn-arrow" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Wizard: Step 2 - Workspace -->
+    <div id="wizard-workspace" class="screen">
+        <div class="wizard-header">
+            <div class="wizard-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 66%"></div>
+                </div>
+                <span class="progress-text">Paso 2 de 3</span>
+            </div>
+        </div>
+        
+        <div class="wizard-content">
+            <h2 class="screen-title">Workspaces</h2>
+            <p class="screen-subtitle">¿Participas en algún grupo u organización privada?</p>
+            
+            <div class="workspace-options">
+                <div class="input-group">
+                    <input type="text" id="workspace-code" class="input-text" placeholder="Código de workspace (opcional)">
+                    <button class="btn-secondary" onclick="joinWorkspace()">Unirse</button>
+                </div>
+                
+                <div class="or-divider">
+                    <span>O continúa sin workspace</span>
+                </div>
+                
+                <button class="btn-primary btn-large" onclick="nextWizardStep('networks')">
+                    Continuar
+                    <svg class="btn-arrow" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wizard: Step 3 - More Networks -->
+    <div id="wizard-networks" class="screen">
+        <div class="wizard-header">
+            <div class="wizard-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+                <span class="progress-text">Paso 3 de 3</span>
+            </div>
+        </div>
+        
+        <div class="wizard-content">
+            <h2 class="screen-title">Más contactos</h2>
+            <p class="screen-subtitle">Conecta más redes sociales para ampliar tu red (opcional)</p>
+            
+            <div class="networks-list">
+                <div class="network-item">
+                    <div class="network-info">
+                        <div class="network-icon">📘</div>
+                        <span>Facebook</span>
+                    </div>
+                    <span class="network-status connected">Conectado ✓</span>
+                </div>
+                
+                <div class="network-item">
+                    <div class="network-info">
+                        <div class="network-icon">📷</div>
+                        <span>Instagram</span>
+                    </div>
+                    <button class="btn-connect" onclick="connectNetwork('instagram')">Conectar</button>
+                </div>
+                
+                <div class="network-item">
+                    <div class="network-info">
+                        <div class="network-icon">🐦</div>
+                        <span>Twitter</span>
+                    </div>
+                    <button class="btn-connect" onclick="connectNetwork('twitter')">Conectar</button>
+                </div>
+                
+                <div class="network-item">
+                    <div class="network-info">
+                        <div class="network-icon">💼</div>
+                        <span>LinkedIn</span>
+                    </div>
+                    <button class="btn-connect" onclick="connectNetwork('linkedin')">Conectar</button>
+                </div>
+            </div>
+            
+            <button class="btn-primary btn-large" onclick="finishWizard()">
+                Comenzar
+                <svg class="btn-arrow" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Contacts List -->
+    <div id="contacts-list" class="screen">
+        <div class="contacts-header">
+            <h2 class="screen-title">Tus Contactos</h2>
+            <p class="contacts-count"><span id="contact-count">24</span> contactos listos para calificar</p>
+        </div>
+        
+        <div class="contacts-grid">
+            <div class="contact-card">
+                <div class="contact-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">MG</div>
+                <div class="contact-info">
+                    <div class="contact-name">María García</div>
+                    <div class="contact-source">Facebook</div>
+                </div>
+                <div class="contact-rating">★ 4.5</div>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-avatar" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">JP</div>
+                <div class="contact-info">
+                    <div class="contact-name">Juan Pérez</div>
+                    <div class="contact-source">Google</div>
+                </div>
+                <div class="contact-rating">★ 4.2</div>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-avatar" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">AL</div>
+                <div class="contact-info">
+                    <div class="contact-name">Ana López</div>
+                    <div class="contact-source">LinkedIn</div>
+                </div>
+                <div class="contact-rating">★ 4.7</div>
+            </div>
+            
+            <div class="contact-card">
+                <div class="contact-avatar" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">CS</div>
+                <div class="contact-info">
+                    <div class="contact-name">Carlos Silva</div>
+                    <div class="contact-source">Facebook</div>
+                </div>
+                <div class="contact-rating">★ 3.9</div>
+            </div>
+        </div>
+        
+        <div class="play-button-container">
+            <button class="btn-play" onclick="startRating()">
+                <div class="play-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+                <span class="play-text">Comenzar a Calificar</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="particles.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
