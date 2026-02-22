@@ -164,6 +164,11 @@ La experiencia nativa para swipes y calificaciones rápidas.
   1. Instala la app **Expo Go** en tu móvil (App Store / Play Store).
   2. Asegúrate de que tu móvil y PC estén en la **misma red Wi-Fi**.
   3. Ejecuta los comandos:
+
+     > **⚠️ ALERTA DE COMPATIBILIDAD CRÍTICA:**
+     > Este proyecto está estrictamente atado a **Expo SDK 54** y **Expo Go Client Version 54.0.6**.
+     > Bajo ninguna circunstancia se debe actualizar el SDK a versiones incompatibles ni instalar paquetes que requieran SDKs superiores/inferiores sin revisarlo con el equipo, dado los múltiples conflictos de dependencias experimentados anteriormente.
+
      ```bash
      cd mobile
      # Instalar dependencias (solo la primera vez)
@@ -172,6 +177,14 @@ La experiencia nativa para swipes y calificaciones rápidas.
      cmd /c npx expo start
      ```
   4. Escanea el código QR que aparecerá en la terminal con la app Expo Go.
+
+### 🌐 Prototipo Estático (Landing Page)
+Una versión rápida para visualizar el diseño y la estética conceptual del proyecto sin necesidad de instalar dependencias pesadas.
+- **Comando**:
+  ```bash
+  npx -y serve web-prototype
+  ```
+- **Acceso**: Abre `http://localhost:3000` en tu navegador.
 
 ### ⚙️ Backend (Próximamente)
 - **Tecnología**: NestJS + MySQL.

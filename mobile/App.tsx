@@ -1,13 +1,9 @@
+import React from 'react';
+import "./global.css";
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
-import { styled } from 'nativewind';
 import { Hexagon, Shield, Users, Zap, ArrowRight, Smartphone } from 'lucide-react-native';
-import { motion } from 'framer-motion'; // Note: Framer motion is for web, but for now we'll use standard RN/Reanimated logic
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
-
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export default function App() {
   return (
@@ -42,13 +38,13 @@ export default function App() {
 
         {/* Action Button */}
         <Animated.View entering={FadeInDown.delay(600).duration(800)} className="mb-16">
-          <StyledTouchableOpacity
+          <TouchableOpacity
             activeOpacity={0.8}
             className="bg-brand-primary p-5 rounded-2xl flex-row items-center justify-center gap-2 shadow-lg shadow-indigo-500/30"
           >
             <Text className="text-white font-bold text-lg">Empezar Ahora</Text>
             <ArrowRight color="white" size={20} />
-          </StyledTouchableOpacity>
+          </TouchableOpacity>
         </Animated.View>
 
         {/* Features Preview */}
@@ -78,7 +74,14 @@ export default function App() {
   );
 }
 
-function FeatureCard({ icon, title, description, delay }) {
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  delay: number;
+}
+
+function FeatureCard({ icon, title, description, delay }: FeatureCardProps) {
   return (
     <Animated.View
       entering={FadeInDown.delay(delay).duration(800)}
@@ -86,7 +89,7 @@ function FeatureCard({ icon, title, description, delay }) {
     >
       <View className="w-12 h-12 rounded-2xl bg-slate-900 items-center justify-center border border-slate-700">
         {icon}
-      </div>
+      </View>
       <View className="flex-1">
         <Text className="text-white font-bold text-base mb-1">{title}</Text>
         <Text className="text-slate-400 text-sm leading-snug">{description}</Text>
