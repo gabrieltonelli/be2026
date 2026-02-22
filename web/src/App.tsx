@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Hexagon, Shield, Users, Zap, ArrowRight, Monitor, Smartphone, CheckCircle2, ChevronLeft } from 'lucide-react'
+import { Hexagon, Shield, Users, Zap, ArrowRight, Monitor, Smartphone, CheckCircle2, ChevronLeft, Globe } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
+import { useTranslation } from 'react-i18next'
 
 function App() {
+  const { t, i18n } = useTranslation();
   const [view, setView] = useState<'hero' | 'link'>('hero');
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white selection:bg-indigo-500/30 font-sans overflow-x-hidden">
@@ -30,8 +33,8 @@ function App() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="hidden md:flex gap-8 text-sm font-medium text-slate-300"
             >
-              <a href="#" className="hover:text-white transition-colors">Concepto</a>
-              <a href="#" className="hover:text-white transition-colors">Privacidad</a>
+              <a href="#" className="hover:text-white transition-colors">{t('nav.about', 'Concepto')}</a>
+              <a href="#" className="hover:text-white transition-colors">{t('nav.features', 'Privacidad')}</a>
               <a href="#" className="hover:text-white transition-colors">Roadmap</a>
             </motion.div>
           ) : (
@@ -45,12 +48,38 @@ function App() {
           )}
         </AnimatePresence>
 
-        <button
-          onClick={() => setView(view === 'hero' ? 'link' : 'hero')}
-          className="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/20"
-        >
-          {view === 'hero' ? 'Abrir Be Web' : 'Volver'}
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <button
+              onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+              className="w-10 h-10 flex items-center justify-center bg-slate-800/50 hover:bg-slate-700/50 rounded-full transition-colors border border-slate-700/50"
+            >
+              <Globe className="text-slate-300" size={18} />
+            </button>
+            <AnimatePresence>
+              {isLangMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                  className="absolute right-0 top-12 bg-[#1e293b] rounded-xl p-2 w-32 shadow-xl border border-slate-700/50 flex flex-col z-50"
+                >
+                  <button onClick={() => { i18n.changeLanguage('es'); setIsLangMenuOpen(false); }} className={`p-2 hover:bg-slate-800 rounded-lg text-sm text-left ${i18n.language.includes('es') ? 'text-indigo-400 font-bold' : 'text-slate-300'}`}>
+                    Español
+                  </button>
+                  <button onClick={() => { i18n.changeLanguage('en'); setIsLangMenuOpen(false); }} className={`p-2 hover:bg-slate-800 rounded-lg text-sm text-left ${i18n.language.includes('en') ? 'text-indigo-400 font-bold' : 'text-slate-300'}`}>
+                    English
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <button
+            onClick={() => setView(view === 'hero' ? 'link' : 'hero')}
+            className="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/20"
+          >
+            {view === 'hero' ? t('nav.login', 'Abrir Be Web') : 'Volver'}
+          </button>
+        </div>
       </nav>
 
       <main className="relative pt-32 pb-20 px-6">
@@ -65,14 +94,13 @@ function App() {
               className="max-w-6xl mx-auto text-center"
             >
               <h2 className="text-indigo-400 font-semibold tracking-widest uppercase text-xs sm:text-sm mb-4">
-                We are perceptions
+                {t('app.slogan', 'We are perceptions')}
               </h2>
               <h1 className="text-5xl md:text-8xl font-extrabold mb-8 tracking-tight leading-[1.1]">
-                Tu esencia <br /><span className="gradient-text">en la gran pantalla</span>
+                {t('hero.title1', 'Descubre tu')} <br /><span className="gradient-text">{t('hero.title2', 'verdadera esencia')}</span>
               </h1>
               <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-                Usa <strong>Be Web</strong> para analizar tus estadísticas avanzadas,
-                gestionar tus Workspaces y descargar tus informes de autoconocimiento.
+                {t('hero.description', 'La red social de feedback anónimo diseñada para tu crecimiento personal.')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-24">
