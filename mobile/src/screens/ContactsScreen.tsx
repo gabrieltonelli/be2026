@@ -1,66 +1,131 @@
 import React from 'react';
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
-import { Play, Shield, ChevronLeft } from 'lucide-react-native';
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { Play, Shield, ChevronLeft, Search, Filter } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
 
 export default function ContactsScreen({ navigation }: any) {
     const { t } = useTranslation();
 
     const contacts = [
-        { id: 1, name: 'María García', relation: 'Compañera de trabajo', color: '#6366f1' },
-        { id: 2, name: 'Juan Pérez', relation: 'Hermano', color: '#8b5cf6' },
-        { id: 3, name: 'Sofia Rodriguez', relation: 'Amiga', color: '#06b6d4' },
-        { id: 4, name: 'Carlos Díaz', relation: 'Jefe', color: '#f59e0b' },
+        { id: 1, name: 'María García', relation: 'Developer', color: '#6366f1', ratings: 24 },
+        { id: 2, name: 'Juan Pérez', relation: 'Designer', color: '#8b5cf6', ratings: 12 },
+        { id: 3, name: 'Sofia Rodriguez', relation: 'Manager', color: '#06b6d4', ratings: 45 },
+        { id: 4, name: 'Carlos Díaz', relation: 'CEO', color: '#f59e0b', ratings: 8 },
     ];
 
     return (
-        <SafeAreaView className="flex-1 bg-brand-dark">
-            <View className="px-6 pt-6 pb-4 flex-row items-center border-b border-slate-800 gap-4">
-                <TouchableOpacity onPress={() => navigation.goBack()} className="w-10 h-10 bg-slate-800 rounded-full items-center justify-center">
-                    <ChevronLeft color="#cbd5e1" size={24} />
-                </TouchableOpacity>
-                <Text className="text-xl font-bold text-white">{t('contacts.title')}</Text>
+        <SafeAreaView className="flex-1 bg-[#050810]">
+            {/* Background Dynamic Glows */}
+            <View className="absolute inset-0 z-0">
+                <Animated.View
+                    entering={FadeIn.duration(2000)}
+                    className="absolute -top-40 -right-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px]"
+                />
             </View>
 
-            <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 100 }}>
-                <Text className="text-slate-400 mb-8 text-base">{t('contacts.desc')}</Text>
+            {/* Custom Header */}
+            <View className="px-6 pt-4 pb-4 flex-row justify-between items-center z-50">
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    className="w-11 h-11 bg-slate-900/80 rounded-xl items-center justify-center border border-slate-800 shadow-xl"
+                >
+                    <ChevronLeft color="#94a3b8" size={24} />
+                </TouchableOpacity>
 
-                <View className="gap-4">
+                <View className="bg-slate-900/50 px-4 py-1.5 rounded-full border border-slate-800/50">
+                    <Text className="text-brand-accent font-black tracking-[3px] text-[10px] uppercase">
+                        {t('contacts.title')}
+                    </Text>
+                </View>
+
+                <TouchableOpacity className="w-11 h-11 bg-slate-900/80 rounded-xl items-center justify-center border border-slate-800">
+                    <Filter color="#94a3b8" size={20} />
+                </TouchableOpacity>
+            </View>
+
+            <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 120 }} className="z-10">
+                <View className="mb-8">
+                    <Text className="text-4xl font-black text-white mb-2 tracking-tighter leading-none">
+                        {t('contacts.title')}
+                    </Text>
+                    <Text className="text-slate-500 font-medium text-base">
+                        {t('contacts.desc')}
+                    </Text>
+                </View>
+
+                <View className="gap-5">
                     {contacts.map((contact, index) => (
-                        <Animated.View key={contact.id} entering={FadeInDown.delay(index * 100)}>
-                            <TouchableOpacity className="bg-slate-800/50 p-4 rounded-2xl border border-slate-700 flex-row items-center gap-4">
-                                <View className="w-12 h-12 rounded-full items-center justify-center" style={{ backgroundColor: `${contact.color}30` }}>
-                                    <Text className="font-bold text-lg" style={{ color: contact.color }}>
+                        <Animated.View key={contact.id} entering={FadeInDown.delay(index * 100).springify()}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                className="bg-slate-900/60 p-5 rounded-[2rem] border border-slate-800 flex-row items-center gap-5 shadow-2xl relative overflow-hidden"
+                            >
+                                <View className="w-14 h-14 rounded-2xl items-center justify-center relative" style={{ backgroundColor: `${contact.color}20` }}>
+                                    <View className="absolute inset-0 border border-white/5 rounded-2xl" />
+                                    <Text className="font-black text-2xl" style={{ color: contact.color }}>
                                         {contact.name.charAt(0)}
                                     </Text>
+                                    <View className="absolute -bottom-1 -right-1 bg-green-500 w-3.5 h-3.5 rounded-full border-2 border-[#050810]" />
                                 </View>
+
                                 <View className="flex-1">
-                                    <Text className="text-white font-bold text-lg mb-1">{contact.name}</Text>
-                                    <Text className="text-slate-400 text-sm">{contact.relation}</Text>
+                                    <Text className="text-white font-black text-lg leading-tight mb-1">{contact.name}</Text>
+                                    <View className="flex-row items-center gap-2">
+                                        <Text className="text-slate-500 font-bold text-[10px] tracking-widest uppercase">{contact.relation}</Text>
+                                        <View className="w-1 h-1 bg-slate-700 rounded-full" />
+                                        <Text className="text-indigo-400/80 font-black text-[10px] uppercase">{contact.ratings} RATINGS</Text>
+                                    </View>
                                 </View>
-                                <View className="w-10 h-10 rounded-full bg-brand-primary/20 items-center justify-center">
-                                    <Play color="#6366f1" size={18} fill="#6366f1" />
+
+                                <View className="w-10 h-10 rounded-xl bg-slate-800/80 items-center justify-center border border-slate-700/50">
+                                    <Play color={contact.color} size={16} fill={contact.color} />
                                 </View>
                             </TouchableOpacity>
                         </Animated.View>
                     ))}
                 </View>
 
-                <Animated.View entering={FadeInDown.delay(600)} className="mt-12 bg-[#2dd4bf]/10 p-6 rounded-3xl border border-[#2dd4bf]/20 items-center">
-                    <Shield color="#2dd4bf" size={32} className="mb-4" />
-                    <Text className="text-white font-bold text-lg text-center mx-4 mb-2">Recuerda</Text>
-                    <Text className="text-[#2dd4bf] text-center mb-6 leading-relaxed">
-                        Tus calificaciones son 100% anónimas y no enviarán notificaciones directas al calificar.
-                    </Text>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('Rating')}
-                        className="bg-[#2dd4bf] py-4 px-8 rounded-full shadow-lg shadow-[#2dd4bf]/30"
+                {/* Privacy Card */}
+                <Animated.View entering={FadeInDown.delay(600)} className="mt-12 group">
+                    <LinearGradient
+                        colors={['rgba(34,212,191,0.08)', 'rgba(34,212,191,0.03)']}
+                        style={{ padding: 24, borderRadius: 32, borderWidth: 1, borderColor: 'rgba(34,212,191,0.2)' }}
                     >
-                        <Text className="text-slate-900 font-bold">{t('contacts.start')}</Text>
-                    </TouchableOpacity>
+                        <View className="flex-row items-center gap-4 mb-4">
+                            <View className="w-12 h-12 rounded-2xl bg-[#2dd4bf]/20 items-center justify-center">
+                                <Shield color="#2dd4bf" size={24} />
+                            </View>
+                            <Text className="text-white font-black text-xl tracking-tight">Privacidad 100%</Text>
+                        </View>
+                        <Text className="text-[#2dd4bf]/80 text-[15px] font-medium leading-[22px] mb-6">
+                            Tus calificaciones son anónimas. Be protege tu identidad mediante algoritmos de agregación.
+                        </Text>
+                    </LinearGradient>
                 </Animated.View>
             </ScrollView>
+
+            {/* Floating Action Button */}
+            <Animated.View entering={FadeInDown.delay(800)} className="absolute bottom-6 left-0 right-0 px-8 z-50">
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => navigation.navigate('Rating')}
+                    className="h-16 rounded-[1.8rem] overflow-hidden shadow-2xl shadow-indigo-500/40"
+                >
+                    <LinearGradient
+                        colors={['#6366f1', '#a855f7']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        className="w-full h-full items-center justify-center flex-row gap-3"
+                    >
+                        <Play color="white" size={20} fill="white" />
+                        <Text className="text-white font-black text-base tracking-widest uppercase">{t('contacts.start')}</Text>
+                    </LinearGradient>
+                </TouchableOpacity>
+            </Animated.View>
         </SafeAreaView>
     );
 }

@@ -9,3 +9,14 @@ Estamos trabajando de forma obligatoria con **Expo SDK 54** y **Expo Go (Client 
 3. **Instalación de paquetes**: Debido a los conflictos resueltos anteriormente, si necesitas ejecutar la instalación, usa:
    `npm install --legacy-peer-deps`
 4. **Objetivo Principal**: Mantener la viabilidad de escanear el código QR con el teléfono móvil sin caídas por conflictos de versión de React Native / SVG / Expo.
+
+## 🛠️ Utilidades (Solo Windows)
+
+### Liberar Puerto 8001 (`kill8001.bat`)
+Si al intentar iniciar Expo recibes un error de que el puerto **8001** ya está en uso, puedes usar este script para cerrar rápidamente cualquier proceso que esté bloqueando el puerto.
+
+**Uso:**
+- Ejecuta `.\kill8001.bat` desde la terminal dentro de esta carpeta.
+- O haz doble clic sobre el archivo `mobile/kill8001.bat`.
+
+*Nota: Este script utiliza comandos específicos de Windows (`netstat` y `taskkill`).*

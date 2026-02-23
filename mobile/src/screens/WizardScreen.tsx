@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, TextInput } from 'react-native';
-import Animated, { FadeInRight, FadeInDown, FadeOutLeft } from 'react-native-reanimated';
-import { ChevronLeft, Briefcase, Heart, Smile, Users, Hexagon, ArrowRight, Star } from 'lucide-react-native';
+import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, TextInput, Dimensions } from 'react-native';
+import Animated, { FadeInRight, FadeInDown, FadeOutLeft, FadeIn } from 'react-native-reanimated';
+import { ChevronLeft, Briefcase, Heart, Smile, Users, Hexagon, ArrowRight, Star, Shield, Lock } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
 
 export default function WizardScreen({ navigation }: any) {
     const { t } = useTranslation();
@@ -15,51 +18,80 @@ export default function WizardScreen({ navigation }: any) {
         else navigation.navigate('Contacts');
     };
 
-    const skipStep = () => {
-        nextStep();
-    };
-
-    const AmbitButton = ({ id, icon: Icon, label }: any) => {
+    const AmbitButton = ({ id, icon: Icon, label, color }: any) => {
         const isSelected = selectedAmbits.includes(id);
         return (
             <TouchableOpacity
-                activeOpacity={0.7}
+                activeOpacity={0.8}
                 onPress={() => setSelectedAmbits(prev => prev.includes(id) ? prev.filter(a => a !== id) : [...prev, id])}
-                className={`w-[47%] p-4 rounded-xl border flex-col items-center gap-3 mb-4 transition-colors ${isSelected ? 'bg-brand-primary/20 border-brand-primary text-white' : 'bg-slate-800/50 border-slate-700/50'}`}
+                className={`w-[47%] p-6 rounded-3xl border flex-col items-center gap-4 mb-4 shadow-2xl ${isSelected ? 'border-indigo-500/50' : 'bg-slate-900/40 border-slate-800'}`}
             >
-                <Icon size={28} color={isSelected ? '#6366f1' : '#cbd5e1'} />
-                <Text className={`font-semibold ${isSelected ? 'text-brand-primary' : 'text-slate-300'}`}>{label}</Text>
+                {isSelected ? (
+                    <LinearGradient
+                        colors={[`${color}40`, `${color}10`]}
+                        className="absolute inset-0 rounded-3xl"
+                    />
+                ) : null}
+                <View className={`w-14 h-14 rounded-2xl items-center justify-center border ${isSelected ? 'bg-white/10 border-white/20' : 'bg-slate-800/80 border-slate-700/50'}`}>
+                    <Icon size={28} color={isSelected ? color : '#64748b'} />
+                </View>
+                <Text className={`font-black text-sm tracking-widest uppercase ${isSelected ? 'text-white' : 'text-slate-500'}`}>{label}</Text>
+                {isSelected && (
+                    <View className="absolute top-3 right-3 w-5 h-5 bg-indigo-500 rounded-full items-center justify-center">
+                        <Text className="text-white text-[10px] font-bold">✓</Text>
+                    </View>
+                )}
             </TouchableOpacity>
         );
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-brand-dark">
-            <View className="px-6 pt-6 pb-4 flex-row justify-between items-center border-b border-slate-800">
-                <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : navigation.goBack()} className="w-10 h-10 bg-slate-800 rounded-full items-center justify-center">
-                    <ChevronLeft color="#cbd5e1" size={24} />
-                </TouchableOpacity>
-                <Text className="text-slate-400 font-bold tracking-widest text-xs uppercase">
-                    {step}/4 - {step === 1 ? t('wizard.login.title') : step === 2 ? t('wizard.ambits.title') : step === 3 ? t('wizard.workspace.title') : t('wizard.networks.title')}
-                </Text>
-                <View className="w-10" />
+        <SafeAreaView className="flex-1 bg-[#050810]">
+            {/* Background Dynamic Glows */}
+            <View className="absolute inset-0 z-0">
+                <Animated.View
+                    entering={FadeIn.duration(2000)}
+                    className="absolute -top-40 -left-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px]"
+                />
+                <Animated.View
+                    entering={FadeIn.duration(2000).delay(800)}
+                    className="absolute bottom-40 -right-20 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px]"
+                />
             </View>
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="px-6 pt-8 pb-32">
+            {/* Custom Header */}
+            <View className="px-6 pt-4 pb-4 flex-row justify-between items-center z-50">
+                <TouchableOpacity
+                    onPress={() => step > 1 ? setStep(step - 1) : navigation.goBack()}
+                    className="w-11 h-11 bg-slate-900/80 rounded-xl items-center justify-center border border-slate-800 shadow-xl"
+                >
+                    <ChevronLeft color="#94a3b8" size={24} />
+                </TouchableOpacity>
+
+                <View className="bg-slate-900/50 px-4 py-1.5 rounded-full border border-slate-800/50">
+                    <Text className="text-brand-accent font-black tracking-[3px] text-[10px] uppercase">
+                        {step}/4 • {t('app.name')}
+                    </Text>
+                </View>
+
+                <View className="w-11" />
+            </View>
+
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="px-6 pt-6 pb-40 z-10">
                 {step === 1 && (
                     <Animated.View entering={FadeInRight} exiting={FadeOutLeft} className="flex-1">
-                        <View className="w-16 h-16 bg-brand-primary/20 rounded-2xl items-center justify-center mb-6">
-                            <Users color="#6366f1" size={32} />
+                        <View className="w-16 h-16 bg-indigo-500/20 rounded-[2rem] items-center justify-center mb-8 border border-indigo-500/30">
+                            <Users color="#818cf8" size={32} />
                         </View>
-                        <Text className="text-3xl font-bold text-white mb-2">{t('wizard.login.title')}</Text>
-                        <Text className="text-slate-400 mb-10 text-base">{t('wizard.login.desc')}</Text>
+                        <Text className="text-4xl font-black text-white mb-3 tracking-tighter leading-none">{t('wizard.login.title')}</Text>
+                        <Text className="text-slate-400 mb-10 text-lg font-medium leading-relaxed">{t('wizard.login.desc')}</Text>
 
                         <View className="gap-4">
-                            <TouchableOpacity onPress={nextStep} className="bg-[#1877F2] p-4 rounded-2xl flex-row items-center justify-center gap-3">
-                                <Text className="text-white font-bold text-lg">Continuar con Facebook</Text>
+                            <TouchableOpacity activeOpacity={0.8} onPress={nextStep} className="bg-[#1877F2]/90 p-5 rounded-[2rem] flex-row items-center justify-center gap-3 border-b-4 border-[#0e5cad]">
+                                <Text className="text-white font-black text-lg tracking-tight">Continuar con Facebook</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={nextStep} className="bg-white p-4 rounded-2xl flex-row items-center justify-center gap-3">
-                                <Text className="text-slate-900 font-bold text-lg">Continuar con Google</Text>
+                            <TouchableOpacity activeOpacity={0.8} onPress={nextStep} className="bg-white p-5 rounded-[2rem] flex-row items-center justify-center gap-3 border-b-4 border-slate-300">
+                                <Text className="text-slate-900 font-black text-lg tracking-tight">Continuar con Google</Text>
                             </TouchableOpacity>
                         </View>
                     </Animated.View>
@@ -67,70 +99,92 @@ export default function WizardScreen({ navigation }: any) {
 
                 {step === 2 && (
                     <Animated.View entering={FadeInRight} exiting={FadeOutLeft} className="flex-1">
-                        <View className="w-16 h-16 bg-[#8b5cf6]/20 rounded-2xl items-center justify-center mb-6">
-                            <Hexagon color="#8b5cf6" size={32} />
+                        <View className="w-16 h-16 bg-purple-500/20 rounded-[2rem] items-center justify-center mb-8 border border-purple-500/30">
+                            <Hexagon color="#a855f7" size={32} />
                         </View>
-                        <Text className="text-3xl font-bold text-white mb-2">{t('wizard.ambits.title')}</Text>
-                        <Text className="text-slate-400 mb-8 text-base">{t('wizard.ambits.desc')}</Text>
+                        <Text className="text-4xl font-black text-white mb-3 tracking-tighter leading-none">{t('wizard.ambits.title')}</Text>
+                        <Text className="text-slate-400 mb-8 text-lg font-medium leading-relaxed">{t('wizard.ambits.desc')}</Text>
 
                         <View className="flex-row flex-wrap justify-between">
-                            <AmbitButton id="laboral" label="Laboral" icon={Briefcase} />
-                            <AmbitButton id="social" label="Social" icon={Users} />
-                            <AmbitButton id="salud" label="Salud" icon={Heart} />
-                            <AmbitButton id="artistico" label="Artístico" icon={Smile} />
+                            <AmbitButton id="laboral" label="Laboral" icon={Briefcase} color="#6366f1" />
+                            <AmbitButton id="social" label="Social" icon={Users} color="#8b5cf6" />
+                            <AmbitButton id="salud" label="Salud" icon={Heart} color="#ec4899" />
+                            <AmbitButton id="artistico" label="Artístico" icon={Smile} color="#f59e0b" />
                         </View>
                     </Animated.View>
                 )}
 
                 {step === 3 && (
                     <Animated.View entering={FadeInRight} exiting={FadeOutLeft} className="flex-1">
-                        <View className="w-16 h-16 bg-[#06b6d4]/20 rounded-2xl items-center justify-center mb-6">
-                            <Briefcase color="#06b6d4" size={32} />
+                        <View className="w-16 h-16 bg-cyan-500/20 rounded-[2rem] items-center justify-center mb-8 border border-cyan-500/30">
+                            <Lock color="#22d3ee" size={32} />
                         </View>
-                        <Text className="text-3xl font-bold text-white mb-2">{t('wizard.workspace.title')}</Text>
-                        <Text className="text-slate-400 mb-8 text-base">{t('wizard.workspace.desc')}</Text>
+                        <Text className="text-4xl font-black text-white mb-3 tracking-tighter leading-none">{t('wizard.workspace.title')}</Text>
+                        <Text className="text-slate-400 mb-8 text-lg font-medium leading-relaxed">{t('wizard.workspace.desc')}</Text>
 
-                        <TextInput
-                            className="bg-slate-800 text-white p-5 rounded-2xl text-lg font-mono tracking-widest text-center border border-slate-700 mb-6"
-                            placeholder="EJ: BE-2026XYZ"
-                            placeholderTextColor="#475569"
-                            value={workspaceCode}
-                            onChangeText={setWorkspaceCode}
-                        />
+                        <View className="relative">
+                            <TextInput
+                                className="bg-slate-900 text-white p-6 rounded-[2rem] text-xl font-black tracking-[4px] text-center border-2 border-slate-800 mb-4 focus:border-cyan-500/50 shadow-2xl"
+                                placeholder="EJ: BE-2026XYZ"
+                                placeholderTextColor="#334155"
+                                value={workspaceCode}
+                                onChangeText={setWorkspaceCode}
+                                autoCapitalize="characters"
+                            />
+                            <View className="absolute -top-3 left-1/2 -ml-16 bg-slate-900 px-4 py-1 rounded-full border border-slate-800">
+                                <Text className="text-[9px] font-black text-cyan-400 tracking-widest uppercase">Código Especial</Text>
+                            </View>
+                        </View>
                     </Animated.View>
                 )}
 
                 {step === 4 && (
                     <Animated.View entering={FadeInRight} exiting={FadeOutLeft} className="flex-1">
-                        <View className="w-16 h-16 bg-[#2dd4bf]/20 rounded-2xl items-center justify-center mb-6">
-                            <Star color="#2dd4bf" size={32} />
+                        <View className="w-16 h-16 bg-teal-500/20 rounded-[2rem] items-center justify-center mb-8 border border-teal-500/30">
+                            <Star color="#14b8a6" size={32} />
                         </View>
-                        <Text className="text-3xl font-bold text-white mb-2">{t('wizard.networks.title')}</Text>
-                        <Text className="text-slate-400 mb-8 text-base">{t('wizard.networks.desc')}</Text>
+                        <Text className="text-4xl font-black text-white mb-3 tracking-tighter leading-none">{t('wizard.networks.title')}</Text>
+                        <Text className="text-slate-400 mb-8 text-lg font-medium leading-relaxed">{t('wizard.networks.desc')}</Text>
 
                         <View className="gap-4">
-                            <TouchableOpacity onPress={nextStep} className="bg-[#0077B5] p-4 rounded-2xl flex-row items-center justify-center">
-                                <Text className="text-white font-bold text-lg">Conectar LinkedIn</Text>
+                            <TouchableOpacity activeOpacity={0.8} onPress={nextStep} className="bg-[#0077B5] p-5 rounded-[2rem] flex-row items-center justify-center border-b-4 border-[#045d8b]">
+                                <Text className="text-white font-black text-lg">Conectar LinkedIn</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={nextStep} className="bg-slate-800 border border-slate-700 p-4 rounded-2xl flex-row items-center justify-center">
-                                <Text className="text-white font-bold text-lg">Conectar Instagram</Text>
+                            <TouchableOpacity activeOpacity={0.8} onPress={nextStep} className="bg-slate-900 border-2 border-slate-800 p-5 rounded-[2rem] flex-row items-center justify-center border-b-4 border-slate-950">
+                                <Text className="text-white font-black text-lg">Conectar Instagram</Text>
                             </TouchableOpacity>
                         </View>
                     </Animated.View>
                 )}
             </ScrollView>
 
-            {/* Footer Nav */}
-            <Animated.View entering={FadeInDown} className="absolute bottom-0 left-0 right-0 p-6 bg-brand-dark border-t border-slate-800 flex-row gap-4">
-                {step > 1 && (
-                    <TouchableOpacity onPress={skipStep} className="flex-1 p-4 rounded-2xl items-center justify-center border border-slate-700">
-                        <Text className="text-slate-300 font-bold">{t('wizard.skip')}</Text>
+            {/* Footer Navigation - Floating Aesthetic */}
+            <Animated.View entering={FadeInDown.delay(500)} className="absolute bottom-0 left-0 right-0 p-8 z-50">
+                <View className="bg-slate-900/90 border border-slate-800 p-4 rounded-[2.5rem] flex-row gap-4 shadow-2xl">
+                    {step > 1 && (
+                        <TouchableOpacity
+                            onPress={() => setStep(prev => prev + 1)}
+                            className="flex-1 p-5 rounded-[1.8rem] items-center justify-center border border-slate-800"
+                        >
+                            <Text className="text-slate-500 font-black text-xs tracking-widest uppercase">{t('wizard.skip')}</Text>
+                        </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={nextStep}
+                        className="flex-[2] h-16 rounded-[1.8rem] overflow-hidden shadow-lg shadow-indigo-500/30"
+                    >
+                        <LinearGradient
+                            colors={['#6366f1', '#a855f7']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            className="w-full h-full items-center justify-center flex-row gap-3"
+                        >
+                            <Text className="text-white font-black text-base tracking-tight">{t('wizard.next')}</Text>
+                            <ArrowRight color="white" size={20} />
+                        </LinearGradient>
                     </TouchableOpacity>
-                )}
-                <TouchableOpacity onPress={nextStep} className="flex-[2] p-4 rounded-2xl bg-brand-primary items-center justify-center flex-row gap-2">
-                    <Text className="text-white font-bold">{t('wizard.next')}</Text>
-                    <ArrowRight color="white" size={18} />
-                </TouchableOpacity>
+                </View>
             </Animated.View>
         </SafeAreaView>
     );

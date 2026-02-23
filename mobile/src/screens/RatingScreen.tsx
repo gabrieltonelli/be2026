@@ -1,15 +1,29 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, Animated as RNAnimated, PanResponder, Dimensions, Image } from 'react-native';
-import { Menu, Settings, LogOut, Moon, Search, Star, Hexagon, BarChart2, SkipForward } from 'lucide-react-native';
-import Animated, { FadeInDown, FadeIn, SlideInDown, useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import React, { useState, useRef, useMemo } from 'react';
+import { View, Text, SafeAreaView, TouchableOpacity, Dimensions, Image, Platform } from 'react-native';
+import { Menu, Settings, LogOut, Moon, Search, Star, Hexagon, BarChart2, SkipForward, Zap, Info } from 'lucide-react-native';
+import Animated, {
+    FadeInDown,
+    FadeIn,
+    SlideInDown,
+    useSharedValue,
+    useAnimatedStyle,
+    withSpring,
+    withTiming,
+    interpolate,
+    Extrapolate,
+    withSequence,
+    runOnJS
+} from 'react-native-reanimated';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useTranslation } from 'react-i18next';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const CONTACTS = [
-    { id: 1, name: 'María García', avatarColor: '#6366f1' },
-    { id: 2, name: 'Juan Pérez', avatarColor: '#8b5cf6' },
-    { id: 3, name: 'Sofia Rodriguez', avatarColor: '#06b6d4' },
+    { id: 1, name: 'María García', avatarColor: '#6366f1', role: 'Developer' },
+    { id: 2, name: 'Juan Pérez', avatarColor: '#8b5cf6', role: 'Designer' },
+    { id: 3, name: 'Sofia Rodriguez', avatarColor: '#06b6d4', role: 'Manager' },
 ];
 
 const EMOJIS = [
@@ -20,205 +34,324 @@ const EMOJIS = [
     { id: 5, icon: '🤩', labelKey: 'rating.very_positive', color: '#22c55e' },
 ];
 
+const ATTRIBUTES = [
+    { id: 1, question: '¿Impuntual o Puntual?', positive: 'Puntual', negative: 'Impuntual' },
+    { id: 2, question: '¿Poco o Muy Colaborativo?', positive: 'Colaborativo', negative: 'Individualista' },
+    { id: 3, question: '¿Desorganizado o Prolijo?', positive: 'Prolijo', negative: 'Desorganizado' },
+];
+
 export default function RatingScreen({ navigation }: any) {
     const { t } = useTranslation();
     const [currentContactIdx, setCurrentContactIdx] = useState(0);
+    const [currentAttrIdx, setCurrentAttrIdx] = useState(0);
     const [selectedEmoji, setSelectedEmoji] = useState<number | null>(null);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+    const [isFlipped, setIsFlipped] = useState(false);
 
-    // Tinder Swipe setup for the card
-    const pan = useRef(new RNAnimated.ValueXY()).current;
+    const contact = CONTACTS[currentContactIdx];
+    const attribute = ATTRIBUTES[currentAttrIdx];
 
-    const panResponder = useRef(
-        PanResponder.create({
-            onMoveShouldSetPanResponder: () => true,
-            onPanResponderMove: RNAnimated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false }),
-            onPanResponderRelease: (e, gesture) => {
-                if (gesture.dx > 120 || gesture.dx < -120) {
-                    // Swipe force met, animate off screen
-                    RNAnimated.spring(pan, {
-                        toValue: { x: gesture.dx > 0 ? width + 100 : -width - 100, y: gesture.dy },
-                        useNativeDriver: true,
-                    }).start(() => {
-                        // Callback when animation finishes
-                        resetCard();
-                    });
-                } else {
-                    // Snap back
-                    RNAnimated.spring(pan, {
-                        toValue: { x: 0, y: 0 },
-                        friction: 5,
-                        useNativeDriver: true,
-                    }).start();
-                }
-            },
-        })
-    ).current;
+    // Reanimated Shared Values
+    const translateX = useSharedValue(0);
+    const translateY = useSharedValue(0);
+    const startX = useSharedValue(0);
+    const startY = useSharedValue(0);
+    const scale = useSharedValue(1);
+    const rotateZ = useSharedValue(0);
+    const tiltX = useSharedValue(0);
+    const tiltY = useSharedValue(0);
 
-    const resetCard = () => {
+    const nextStep = () => {
         setSelectedEmoji(null);
-        pan.setValue({ x: 0, y: 0 });
-        // Simulate next contact/attribute
-        setCurrentContactIdx((prev) => (prev + 1) % CONTACTS.length);
+        if (currentAttrIdx < ATTRIBUTES.length - 1) {
+            setCurrentAttrIdx(currentAttrIdx + 1);
+        } else {
+            setCurrentAttrIdx(0);
+            setCurrentContactIdx((prev) => (prev + 1) % CONTACTS.length);
+        }
     };
+
+    // New Gesture API
+    const gesture = Gesture.Pan()
+        .onStart(() => {
+            startX.value = translateX.value;
+            startY.value = translateY.value;
+            scale.value = withSpring(1.05);
+        })
+        .onUpdate((event) => {
+            translateX.value = startX.value + event.translationX;
+            translateY.value = startY.value + event.translationY;
+            rotateZ.value = interpolate(event.translationX, [-width / 2, width / 2], [-10, 10]);
+
+            // 3D Tilt effect
+            tiltY.value = interpolate(event.translationX, [-width / 2, width / 2], [15, -15]);
+            tiltX.value = interpolate(event.translationY, [-height / 4, height / 4], [-10, 10]);
+        })
+        .onEnd((event) => {
+            scale.value = withSpring(1);
+            tiltX.value = withSpring(0);
+            tiltY.value = withSpring(0);
+
+            if (Math.abs(event.translationX) > 120 || Math.abs(event.translationY) > 120) {
+                const targetX = event.translationX > 0 ? width * 1.5 : -width * 1.5;
+                const targetY = event.translationY > 0 ? height : -height;
+
+                translateX.value = withTiming(targetX, { duration: 300 });
+                translateY.value = withTiming(targetY, { duration: 300 }, () => {
+                    translateX.value = 0;
+                    translateY.value = height;
+                    rotateZ.value = 0;
+                    translateY.value = withSpring(0);
+                    runOnJS(nextStep)();
+                });
+            } else {
+                translateX.value = withSpring(0);
+                translateY.value = withSpring(0);
+                rotateZ.value = withSpring(0);
+            }
+        });
+
+    const animatedCardStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                { translateX: translateX.value },
+                { translateY: translateY.value },
+                { scale: scale.value },
+                { rotateZ: `${rotateZ.value}deg` },
+                { perspective: 1000 },
+                { rotateX: `${tiltX.value}deg` },
+                { rotateY: `${tiltY.value}deg` },
+            ],
+        };
+    });
 
     const handleEmojiSelect = (id: number) => {
         setSelectedEmoji(id);
-        // Auto swipe out after selection
+        // Visual feedback and auto-next
         setTimeout(() => {
-            RNAnimated.spring(pan, {
-                toValue: { x: 0, y: -height }, // Swipe up
-                useNativeDriver: true,
-            }).start(() => resetCard());
-        }, 500);
+            translateX.value = withTiming(0, { duration: 200 });
+            translateY.value = withTiming(-height, { duration: 400 }, () => {
+                // Reset card position from bottom
+                translateX.value = 0;
+                translateY.value = height;
+                translateY.value = withSpring(0);
+            });
+            nextStep();
+        }, 600);
     };
 
-    const contact = CONTACTS[currentContactIdx];
-
-    const rotate = pan.x.interpolate({
-        inputRange: [-width / 2, 0, width / 2],
-        outputRange: ['-10deg', '0deg', '10deg'],
-        extrapolate: 'clamp',
-    });
-
     return (
-        <SafeAreaView className="flex-1 bg-[#0f172a] relative">
-            <View className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-                <View className="absolute top-0 right-0 w-64 h-64 bg-indigo-600 rounded-full blur-3xl opacity-50" />
-                <View className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-600 rounded-full blur-3xl opacity-50" />
-            </View>
-
-            {/* Header */}
-            <View className="px-6 pt-6 pb-2 flex-row justify-between items-center z-50">
-                <TouchableOpacity className="w-12 h-12 bg-slate-800/80 rounded-2xl items-center justify-center border border-slate-700/50 shadow-lg shadow-indigo-500/20">
-                    <Menu color="#cbd5e1" size={24} />
-                </TouchableOpacity>
-
-                <View className="items-center">
-                    <Text className="text-brand-accent font-black tracking-widest text-xs">{t('rating.ambit')}</Text>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <SafeAreaView className="flex-1 bg-[#050810] relative">
+                {/* Background Dynamic Glows */}
+                <View className="absolute inset-0 z-0">
+                    <Animated.View
+                        entering={FadeIn.duration(2000)}
+                        className="absolute -top-20 -right-20 w-80 h-80 bg-indigo-600/20 rounded-full blur-[100px]"
+                    />
+                    <Animated.View
+                        entering={FadeIn.duration(2000).delay(500)}
+                        className="absolute bottom-20 -left-20 w-80 h-80 bg-cyan-600/10 rounded-full blur-[100px]"
+                    />
+                    <View className="absolute top-1/2 left-1/4 w-32 h-32 bg-purple-600/10 rounded-full blur-[60px]" />
                 </View>
 
-                <View className="relative">
-                    <TouchableOpacity
-                        onPress={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                        className="w-12 h-12 bg-brand-primary rounded-2xl items-center justify-center border border-indigo-400/50 shadow-lg shadow-indigo-500/50 overflow-hidden"
-                    >
-                        <Text className="text-white font-bold text-lg">G</Text>
+                {/* Header */}
+                <View className="px-6 pt-4 flex-row justify-between items-center z-50">
+                    <TouchableOpacity className="w-11 h-11 bg-slate-900/80 rounded-xl items-center justify-center border border-slate-800 shadow-xl">
+                        <Menu color="#94a3b8" size={22} />
                     </TouchableOpacity>
 
-                    {isProfileMenuOpen && (
-                        <Animated.View entering={FadeIn.duration(200)} className="absolute right-0 top-16 bg-slate-800 rounded-2xl p-4 w-56 shadow-2xl border border-slate-700 z-50">
-                            <View className="border-b border-slate-700/50 pb-3 mb-3">
-                                <Text className="text-white font-bold text-base">Gabriel Tonelli</Text>
-                                <Text className="text-slate-400 text-xs">contacto@be.com</Text>
-                            </View>
-                            <TouchableOpacity className="flex-row items-center gap-3 py-2 px-1 hover:bg-slate-700/50 rounded-lg">
-                                <Moon color="#a78bfa" size={18} />
-                                <Text className="text-slate-300 font-medium">{t('profile.theme')}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigation.navigate('Welcome')} className="flex-row items-center gap-3 py-2 px-1 hover:bg-slate-700/50 rounded-lg mt-1">
-                                <LogOut color="#f87171" size={18} />
-                                <Text className="text-red-400 font-medium">{t('profile.logout')}</Text>
-                            </TouchableOpacity>
-                        </Animated.View>
-                    )}
-                </View>
-            </View>
-
-            {/* Top Half: Contact Area */}
-            <View className="flex-[0.4] items-center justify-center z-10 px-8 pt-8">
-                <Animated.View entering={FadeInDown.duration(500)} className="items-center">
-                    <View className="w-32 h-32 rounded-full items-center justify-center mb-4 relative" style={{ backgroundColor: `${contact.avatarColor}40` }}>
-                        <View className="absolute inset-0 border-4 border-slate-800/80 rounded-full" />
-                        <Text className="font-extrabold text-5xl" style={{ color: contact.avatarColor }}>
-                            {contact.name.charAt(0)}
+                    <View className="items-center bg-slate-900/50 px-4 py-1.5 rounded-full border border-slate-800/50">
+                        <Text className="text-brand-accent font-black tracking-[3px] text-[10px] uppercase">
+                            {t('rating.ambit')}
                         </Text>
                     </View>
-                    <Text className="text-white font-black text-2xl tracking-tight">{contact.name}</Text>
-                    <View className="mt-2 bg-slate-800/80 px-4 py-1 rounded-full border border-slate-700">
-                        <Text className="text-slate-400 text-xs tracking-wider">DESLIZA PARA CAMBIAR</Text>
+
+                    <View className="relative">
+                        <TouchableOpacity
+                            onPress={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                            className="w-11 h-11 bg-indigo-500 rounded-xl items-center justify-center border-2 border-indigo-400/30 overflow-hidden shadow-lg shadow-indigo-500/40"
+                        >
+                            <LinearGradient
+                                colors={['#6366f1', '#4f46e5']}
+                                style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', paddingTop: 8 }}
+                            >
+                                <Text className="text-white font-black text-lg">G</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+
+                        {isProfileMenuOpen && (
+                            <Animated.View
+                                entering={FadeIn.duration(200)}
+                                className="absolute right-0 top-14 bg-slate-900 rounded-2xl p-4 w-56 shadow-2xl border border-slate-800 z-50"
+                            >
+                                <View className="border-b border-slate-800 pb-3 mb-3">
+                                    <Text className="text-white font-bold text-sm">Gabriel Tonelli</Text>
+                                    <Text className="text-slate-500 text-xs">contacto@be.com</Text>
+                                </View>
+                                <TouchableOpacity className="flex-row items-center gap-3 py-2">
+                                    <Moon color="#818cf8" size={16} />
+                                    <Text className="text-slate-300 text-xs font-medium">{t('profile.theme')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => navigation.navigate('Welcome')} className="flex-row items-center gap-3 py-2 mt-1">
+                                    <LogOut color="#ef4444" size={16} />
+                                    <Text className="text-red-500 text-xs font-medium">{t('profile.logout')}</Text>
+                                </TouchableOpacity>
+                            </Animated.View>
+                        )}
                     </View>
-                </Animated.View>
-            </View>
-
-            {/* Bottom Half: Card Area */}
-            <View className="flex-[0.6] items-center px-6 pb-24 z-20">
-                <View className="relative w-full h-full justify-center">
-                    {/* Background card (Stack effect) */}
-                    <View className="absolute w-full h-64 bg-slate-800/30 border border-slate-700/30 rounded-[2rem] top-8 scale-95" />
-                    <View className="absolute w-full h-64 bg-slate-800/50 border border-slate-700/50 rounded-[2rem] top-4 scale-95" />
-
-                    {/* Draggable Card */}
-                    <RNAnimated.View
-                        {...panResponder.panHandlers}
-                        style={[
-                            pan.getLayout(),
-                            { transform: [{ rotate }] }
-                        ]}
-                        className="w-full bg-slate-800 rounded-[2.5rem] p-6 shadow-2xl border border-slate-700/80 relative overflow-hidden"
-                    >
-                        {/* Neon Glow effect inside card */}
-                        <View className="absolute -top-20 -right-20 w-40 h-40 bg-brand-primary/20 blur-3xl rounded-full" />
-
-                        <View className="items-center justify-center py-6 min-h-[120px]">
-                            <Text className="text-white font-black text-2xl text-center leading-tight mb-2">
-                                {t('rating.question')}
-                            </Text>
-                        </View>
-
-                        <View className="flex-row justify-between items-end mt-4 px-2">
-                            {EMOJIS.map((emoji) => {
-                                const isSelected = selectedEmoji === emoji.id;
-                                return (
-                                    <TouchableOpacity
-                                        key={emoji.id}
-                                        activeOpacity={0.8}
-                                        onPress={() => handleEmojiSelect(emoji.id)}
-                                        className="items-center"
-                                    >
-                                        <View className={`w-12 h-12 rounded-full items-center justify-center mb-2 transition-all duration-300 shadow-xl ${isSelected ? 'scale-125 border-2' : 'scale-100 bg-slate-900/50 border border-slate-700/50'}`} style={{ backgroundColor: isSelected ? emoji.color : 'rgba(15,23,42,0.5)', borderColor: isSelected ? 'white' : 'transparent' }}>
-                                            <Text className="text-2xl">{emoji.icon}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
-
-                        <View className="flex-row justify-between px-2 mt-4">
-                            <Text className="text-red-400 font-bold text-xs uppercase tracking-widest bg-red-500/10 px-2 py-1 rounded-md">- {t('rating.very_negative')}</Text>
-                            <Text className="text-green-400 font-bold text-xs uppercase tracking-widest bg-green-500/10 px-2 py-1 rounded-md">+ {t('rating.very_positive')}</Text>
-                        </View>
-                    </RNAnimated.View>
                 </View>
-            </View>
 
-            {/* Bottom Bar: Gamer Controls */}
-            <Animated.View entering={SlideInDown.delay(500)} className="absolute bottom-8 w-full px-6 flex-row justify-between items-center z-50">
-                <TouchableOpacity className="w-14 h-14 bg-slate-800 rounded-full items-center justify-center shadow-lg border border-slate-700/50 active:scale-90 transition-transform">
-                    <Search color="#94a3b8" size={24} />
-                </TouchableOpacity>
+                {/* Contact Area */}
+                <View className="flex-[0.4] items-center justify-center z-10 px-8">
+                    <Animated.View key={currentContactIdx} entering={FadeInDown.springify()} className="items-center">
+                        <View className="w-28 h-28 rounded-full items-center justify-center mb-4 relative shadow-2xl">
+                            {/* Animated ring */}
+                            <View className="absolute inset-0 border-[3px] border-slate-800/50 rounded-full" />
+                            <View className="absolute inset-[-4px] border border-indigo-500/30 rounded-full" />
 
-                <TouchableOpacity className="w-14 h-14 bg-slate-800 rounded-full items-center justify-center shadow-lg border border-slate-700/50 active:scale-90 transition-transform">
-                    <Star color="#f59e0b" size={24} />
-                </TouchableOpacity>
+                            <LinearGradient
+                                colors={[`${contact.avatarColor}40`, `${contact.avatarColor}10`]}
+                                style={{ width: '100%', height: '100%', borderRadius: 100, alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                <Text className="font-black text-5xl" style={{ color: contact.avatarColor, textShadowColor: contact.avatarColor, textShadowRadius: 10 }}>
+                                    {contact.name.charAt(0)}
+                                </Text>
+                            </LinearGradient>
 
-                {/* Central Prominent Button */}
-                <TouchableOpacity className="w-20 h-20 bg-linear-to-b from-indigo-500 to-purple-600 rounded-full items-center justify-center shadow-2xl shadow-indigo-500/40 border-4 border-[#0f172a] -mt-8 active:scale-95 transition-transform">
-                    <Hexagon color="white" size={36} fill="white" />
-                    <View className="absolute inset-0 bg-white/20 rounded-full opacity-0 active:opacity-100 transition-opacity" />
-                </TouchableOpacity>
+                            <View className="absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-4 border-[#050810]" />
+                        </View>
 
-                <TouchableOpacity className="w-14 h-14 bg-slate-800 rounded-full items-center justify-center shadow-lg border border-slate-700/50 active:scale-90 transition-transform">
-                    <BarChart2 color="#38bdf8" size={24} />
-                </TouchableOpacity>
+                        <Text className="text-white font-black text-2xl tracking-tight">{contact.name}</Text>
+                        <Text className="text-slate-500 font-bold text-[10px] tracking-[2px] uppercase mt-1">
+                            {contact.role} • 24 CALIFICACIONES
+                        </Text>
+                    </Animated.View>
+                </View>
 
-                <TouchableOpacity onPress={resetCard} className="w-14 h-14 bg-slate-800 rounded-full items-center justify-center shadow-lg border border-slate-700/50 active:scale-90 transition-transform">
-                    <SkipForward color="#cbd5e1" size={24} />
-                </TouchableOpacity>
-            </Animated.View>
+                {/* Deck Area */}
+                <View className="flex-[0.6] items-center px-6 pb-28 z-20">
+                    <View className="relative w-full h-[320px] justify-center">
 
-        </SafeAreaView>
+                        {/* Stack background cards */}
+                        {[...Array(2)].map((_, i) => (
+                            <View
+                                key={i}
+                                className="absolute w-full h-full bg-slate-900 border border-slate-800/50 rounded-[2.5rem]"
+                                style={{
+                                    top: (i + 1) * 12,
+                                    transform: [{ scale: 1 - (i + 1) * 0.05 }],
+                                    opacity: 0.3 - i * 0.1,
+                                    zIndex: -i
+                                }}
+                            />
+                        ))}
+
+                        {/* Main Interaction Card */}
+                        <GestureDetector gesture={gesture}>
+                            <Animated.View style={[animatedCardStyle]} className="w-full h-full">
+                                <View className="w-full h-full bg-slate-900 rounded-[2.5rem] p-7 shadow-2xl border border-slate-800 relative overflow-hidden">
+                                    {/* Inner glows */}
+                                    <View className="absolute -top-10 -left-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl" />
+                                    <View className="absolute -bottom-10 -right-10 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl" />
+
+                                    <View className="flex-row justify-between items-center mb-6">
+                                        <View className="bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700/50">
+                                            <Text className="text-indigo-400 font-black text-[10px] tracking-widest">ATRIBUTO {currentAttrIdx + 1}/3</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => setIsFlipped(!isFlipped)}>
+                                            <Info color="#64748b" size={18} />
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <View className="items-center justify-center flex-1 py-4">
+                                        <Text className="text-white font-black text-2xl text-center leading-tight mb-4">
+                                            {attribute.question}
+                                        </Text>
+
+                                        {/* Visual Scale Indicator */}
+                                        <View className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden flex-row">
+                                            <View className="h-full w-1/2 bg-red-500/20" />
+                                            <View className="h-full w-1/2 bg-green-500/20" />
+                                            <View className="absolute left-1/2 top-0 w-1 h-full bg-slate-700 mt-[-2px] z-10" />
+                                        </View>
+                                    </View>
+
+                                    {/* Emojis Selector */}
+                                    <View className="flex-row justify-between items-end mt-4">
+                                        {EMOJIS.map((emoji) => {
+                                            const isSelected = selectedEmoji === emoji.id;
+                                            return (
+                                                <TouchableOpacity
+                                                    key={emoji.id}
+                                                    activeOpacity={0.7}
+                                                    onPress={() => handleEmojiSelect(emoji.id)}
+                                                    className="items-center"
+                                                >
+                                                    <Animated.View
+                                                        className={`w-12 h-12 rounded-2xl items-center justify-center mb-2 shadow-xl border ${isSelected ? 'border-2' : 'bg-slate-800/50 border-slate-700/50'}`}
+                                                        style={{
+                                                            backgroundColor: isSelected ? emoji.color : 'rgba(30,41,59,0.5)',
+                                                            borderColor: isSelected ? 'white' : 'rgba(51,65,85,0.5)',
+                                                            transform: [{ scale: isSelected ? 1.2 : 1 }]
+                                                        }}
+                                                    >
+                                                        <Text className="text-2xl">{emoji.icon}</Text>
+                                                        {isSelected && (
+                                                            <View className="absolute inset-0 bg-white/20 rounded-2xl" />
+                                                        )}
+                                                    </Animated.View>
+                                                </TouchableOpacity>
+                                            );
+                                        })}
+                                    </View>
+
+                                    <View className="flex-row justify-between px-1 mt-6">
+                                        <Text className="text-red-500/70 font-black text-[9px] uppercase tracking-widest">{attribute.negative}</Text>
+                                        <Text className="text-green-500/70 font-black text-[9px] uppercase tracking-widest">{attribute.positive}</Text>
+                                    </View>
+                                </View>
+                            </Animated.View>
+                        </GestureDetector>
+                    </View>
+                </View>
+
+                {/* Gamer Control Bar */}
+                <Animated.View entering={SlideInDown.delay(400)} className="absolute bottom-6 w-full px-6 flex-row justify-between items-center z-50">
+                    <TouchableOpacity className="w-12 h-12 bg-slate-900 rounded-2xl items-center justify-center shadow-lg border border-slate-800 active:scale-90">
+                        <Search color="#475569" size={20} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity className="w-12 h-12 bg-slate-900 rounded-2xl items-center justify-center shadow-lg border border-slate-800 active:scale-90">
+                        <Star color="#f59e0b" size={20} />
+                    </TouchableOpacity>
+
+                    {/* Central HEX Button - The Core */}
+                    <View className="relative">
+                        <View className="absolute inset-[-10px] bg-indigo-500/20 rounded-full blur-xl" />
+                        <TouchableOpacity
+                            className="w-20 h-20 rounded-[2rem] items-center justify-center shadow-2xl overflow-hidden border-4 border-[#050810]"
+                        >
+                            <LinearGradient
+                                colors={['#6366f1', '#a855f7']}
+                                style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                <Hexagon color="white" size={32} fill="rgba(255,255,255,0.3)" />
+                                <View className="absolute bottom-2 w-1.5 h-1.5 bg-white rounded-full shadow-lg shadow-white" />
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity className="w-12 h-12 bg-slate-900 rounded-2xl items-center justify-center shadow-lg border border-slate-800 active:scale-90">
+                        <BarChart2 color="#06b6d4" size={20} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={nextStep} className="w-12 h-12 bg-slate-900 rounded-2xl items-center justify-center shadow-lg border border-slate-800 active:scale-90">
+                        <Zap color="#facc15" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+            </SafeAreaView>
+        </GestureHandlerRootView>
     );
 }
-
-const { height } = Dimensions.get('window');
