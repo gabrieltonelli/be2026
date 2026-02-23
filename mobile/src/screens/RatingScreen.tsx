@@ -20,11 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 
-const CONTACTS = [
-    { id: 1, name: 'María García', avatarColor: '#6366f1', role: 'Developer' },
-    { id: 2, name: 'Juan Pérez', avatarColor: '#8b5cf6', role: 'Designer' },
-    { id: 3, name: 'Sofia Rodriguez', avatarColor: '#06b6d4', role: 'Manager' },
-];
+import { useRatings } from '../hooks/useRatings';
 
 const EMOJIS = [
     { id: 1, icon: '😡', labelKey: 'rating.very_negative', color: '#ef4444' },
@@ -34,22 +30,24 @@ const EMOJIS = [
     { id: 5, icon: '🤩', labelKey: 'rating.very_positive', color: '#22c55e' },
 ];
 
-const ATTRIBUTES = [
-    { id: 1, question: '¿Impuntual o Puntual?', positive: 'Puntual', negative: 'Impuntual' },
-    { id: 2, question: '¿Poco o Muy Colaborativo?', positive: 'Colaborativo', negative: 'Individualista' },
-    { id: 3, question: '¿Desorganizado o Prolijo?', positive: 'Prolijo', negative: 'Desorganizado' },
-];
-
 export default function RatingScreen({ navigation }: any) {
     const { t } = useTranslation();
-    const [currentContactIdx, setCurrentContactIdx] = useState(0);
-    const [currentAttrIdx, setCurrentAttrIdx] = useState(0);
+    const {
+        contacts,
+        attributes,
+        currentContactIdx,
+        currentAttrIdx,
+        loading,
+        nextStep,
+        submitRating
+    } = useRatings();
+
     const [selectedEmoji, setSelectedEmoji] = useState<number | null>(null);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const [isFlipped, setIsFlipped] = useState(false);
 
-    const contact = CONTACTS[currentContactIdx];
-    const attribute = ATTRIBUTES[currentAttrIdx];
+    const contact = contacts[currentContactIdx];
+    const attribute = attributes[currentAttrIdx];
 
     // Reanimated Shared Values
     const translateX = useSharedValue(0);
@@ -61,15 +59,10 @@ export default function RatingScreen({ navigation }: any) {
     const tiltX = useSharedValue(0);
     const tiltY = useSharedValue(0);
 
-    const nextStep = () => {
+    const handleNext = () => {
         setSelectedEmoji(null);
-        if (currentAttrIdx < ATTRIBUTES.length - 1) {
-            setCurrentAttrIdx(currentAttrIdx + 1);
-        } else {
-            setCurrentAttrIdx(0);
-            setCurrentContactIdx((prev) => (prev + 1) % CONTACTS.length);
-        }
-    };
+        nextStep();
+    }
 
     // New Gesture API
     const gesture = Gesture.Pan()
@@ -102,7 +95,7 @@ export default function RatingScreen({ navigation }: any) {
                     translateY.value = height;
                     rotateZ.value = 0;
                     translateY.value = withSpring(0);
-                    runOnJS(nextStep)();
+                    runOnJS(handleNext)();
                 });
             } else {
                 translateX.value = withSpring(0);
@@ -125,8 +118,12 @@ export default function RatingScreen({ navigation }: any) {
         };
     });
 
-    const handleEmojiSelect = (id: number) => {
+    const handleEmojiSelect = async (id: number) => {
         setSelectedEmoji(id);
+
+        // Submit to backend
+        await submitRating(id);
+
         // Visual feedback and auto-next
         setTimeout(() => {
             translateX.value = withTiming(0, { duration: 200 });
@@ -135,10 +132,23 @@ export default function RatingScreen({ navigation }: any) {
                 translateX.value = 0;
                 translateY.value = height;
                 translateY.value = withSpring(0);
+                runOnJS(handleNext)();
             });
-            nextStep();
         }, 600);
     };
+
+    if (loading || !contact || !attribute) {
+        return (
+            <View className="flex-1 bg-[#050810] items-center justify-center">
+                <Animated.View entering={FadeIn} className="items-center">
+                    <Hexagon color="#6366f1" size={48} className="mb-4" />
+                    <Text className="text-slate-500 font-bold tracking-widest uppercase text-xs">
+                        {loading ? 'Sincronizando...' : 'No hay datos'}
+                    </Text>
+                </Animated.View>
+            </View>
+        );
+    }
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -212,10 +222,10 @@ export default function RatingScreen({ navigation }: any) {
                             <View className="absolute inset-[-4px] border border-indigo-500/30 rounded-full" />
 
                             <LinearGradient
-                                colors={[`${contact.avatarColor}40`, `${contact.avatarColor}10`]}
+                                colors={[`${contact.avatarColor || '#6366f1'}40`, `${contact.avatarColor || '#6366f1'}10`]}
                                 style={{ width: '100%', height: '100%', borderRadius: 100, alignItems: 'center', justifyContent: 'center' }}
                             >
-                                <Text className="font-black text-5xl" style={{ color: contact.avatarColor, textShadowColor: contact.avatarColor, textShadowRadius: 10 }}>
+                                <Text className="font-black text-5xl" style={{ color: contact.avatarColor || '#6366f1', textShadowColor: contact.avatarColor || '#6366f1', textShadowRadius: 10 }}>
                                     {contact.name.charAt(0)}
                                 </Text>
                             </LinearGradient>
@@ -225,7 +235,7 @@ export default function RatingScreen({ navigation }: any) {
 
                         <Text className="text-white font-black text-2xl tracking-tight">{contact.name}</Text>
                         <Text className="text-slate-500 font-bold text-[10px] tracking-[2px] uppercase mt-1">
-                            {contact.role} • 24 CALIFICACIONES
+                            {contact.role || 'CONTACTO'} • 24 CALIFICACIONES
                         </Text>
                     </Animated.View>
                 </View>
@@ -308,8 +318,8 @@ export default function RatingScreen({ navigation }: any) {
                                     </View>
 
                                     <View className="flex-row justify-between px-1 mt-6">
-                                        <Text className="text-red-500/70 font-black text-[9px] uppercase tracking-widest">{attribute.negative}</Text>
-                                        <Text className="text-green-500/70 font-black text-[9px] uppercase tracking-widest">{attribute.positive}</Text>
+                                        <Text className="text-red-500/70 font-black text-[9px] uppercase tracking-widest">{attribute.negative_term}</Text>
+                                        <Text className="text-green-500/70 font-black text-[9px] uppercase tracking-widest">{attribute.positive_term}</Text>
                                     </View>
                                 </View>
                             </Animated.View>
@@ -347,7 +357,7 @@ export default function RatingScreen({ navigation }: any) {
                         <BarChart2 color="#06b6d4" size={20} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={nextStep} className="w-12 h-12 bg-slate-900 rounded-2xl items-center justify-center shadow-lg border border-slate-800 active:scale-90">
+                    <TouchableOpacity onPress={handleNext} className="w-12 h-12 bg-slate-900 rounded-2xl items-center justify-center shadow-lg border border-slate-800 active:scale-90">
                         <Zap color="#facc15" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
