@@ -1,0 +1,5 @@
+npm error code ETARGET
+npm error notarget No matching version found for react-native-svg@^16.0.0.
+npm error notarget In most cases you or one of your dependencies are requesting
+npm error notarget a package version that doesn't exist.
+npm error A complete log of this run can be found in: C:\Users\Gabriel\AppData\Local\npm-cache\_logs\2026-02-22T03_55_52_253Z-debug-0.log

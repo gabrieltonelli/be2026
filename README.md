@@ -140,32 +140,55 @@ Menues desplegable para una interface mas limpia.
 └── README.md              # Este archivo
 ```
 
-## 🚦 Instalación y Configuración
+## 🚦 Ejecución y Desarrollo
 
-### Prerrequisitos
-- React Native
-- React
-- Node.js
-- Base de datos MySQL
-- Docker
-- Git
-- Credenciales de APIs sociales (Facebook, Google, etc.)
+El proyecto Be se divide en módulos. A continuación se detallan las instrucciones para ejecutar cada uno.
 
-### Pasos de Instalación
+### 🖥️ Frontend Web (Companion App)
+Diseñado como una "WhatsApp Web" para análisis profundo y reportes.
+- **Tecnología**: React + Vite + Tailwind v4.
+- **Pasos**:
+  ```bash
+  cd web
+  # Instalar dependencias (solo la primera vez)
+  cmd /c npm install
+  # Ejecutar en modo desarrollo
+  cmd /c npm run dev
+  ```
+- **Acceso**: Abre `http://localhost:5173` en tu navegador.
 
-```bash
-# Clonar el repositorio
-git clone [URL_DEL_REPOSITORIO]
+### 📱 Frontend Móvil (App Principal)
+La experiencia nativa para swipes y calificaciones rápidas.
+- **Tecnología**: React Native + Expo.
+- **Pasos**:
+  1. Instala la app **Expo Go** en tu móvil (App Store / Play Store).
+  2. Asegúrate de que tu móvil y PC estén en la **misma red Wi-Fi**.
+  3. Ejecuta los comandos:
 
-# Instalar dependencias
-npm install
+     > **⚠️ ALERTA DE COMPATIBILIDAD CRÍTICA:**
+     > Este proyecto está estrictamente atado a **Expo SDK 54** y **Expo Go Client Version 54.0.6**.
+     > Bajo ninguna circunstancia se debe actualizar el SDK a versiones incompatibles ni instalar paquetes que requieran SDKs superiores/inferiores sin revisarlo con el equipo, dado los múltiples conflictos de dependencias experimentados anteriormente.
 
-# Configurar Firebase
-# (Seguir instrucciones en docs/firebase-setup.md)
+     ```bash
+     cd mobile
+     # Instalar dependencias (solo la primera vez)
+     cmd /c npm install
+     # Iniciar el servidor de Expo
+     cmd /c npx expo start
+     ```
+  4. Escanea el código QR que aparecerá en la terminal con la app Expo Go.
 
-# Ejecutar en modo desarrollo
-npm run dev
-```
+### 🌐 Prototipo Estático (Landing Page)
+Una versión rápida para visualizar el diseño y la estética conceptual del proyecto sin necesidad de instalar dependencias pesadas.
+- **Comando**:
+  ```bash
+  npx -y serve web-prototype
+  ```
+- **Acceso**: Abre `http://localhost:3000` en tu navegador.
+
+### ⚙️ Backend (Próximamente)
+- **Tecnología**: NestJS + MySQL.
+- **Estado**: En fase de planificación e inicialización.
 
 ## 🌐 Casos de Uso
 

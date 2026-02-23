@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #6366f1;
+  --color-brand-secondary: #8b5cf6;
+  --color-brand-accent: #06b6d4;
+  --color-dark-bg: #0f172a;
+}
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  @apply bg-dark-bg text-white antialiased;
+}
+
+/* Custom Glassmorphism Utility */
+.glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+}
+
+/* Premium Gradient Text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-linear-to-r from-brand-primary via-brand-secondary to-brand-accent;
+}
