@@ -2,7 +2,7 @@ import axios from 'axios';
 import { auth } from '../config/firebase';
 
 // Wi-Fi IP to allow physical mobile device to connect to backend
-const BASE_URL = 'http://192.168.2.51:3000/api';
+const BASE_URL = 'http://localhost:3000/api';
 
 const api = axios.create({
     baseURL: BASE_URL,
