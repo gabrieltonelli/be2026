@@ -2,17 +2,18 @@ import { Module, Global, OnModuleInit } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
+import { SupabaseAuthStrategy } from './supabase-auth.strategy';
 import { FirebaseAuthStrategy } from './firebase-auth.strategy';
 import { UsersModule } from '../users/users.module';
 
 @Global()
 @Module({
     imports: [
-        PassportModule.register({ defaultStrategy: 'firebase-auth' }),
+        PassportModule.register({ defaultStrategy: 'supabase-auth' }),
         UsersModule,
         ConfigModule,
     ],
-    providers: [FirebaseAuthStrategy],
+    providers: [FirebaseAuthStrategy, SupabaseAuthStrategy],
     exports: [PassportModule],
 })
 export class AuthModule implements OnModuleInit {
@@ -23,9 +24,11 @@ export class AuthModule implements OnModuleInit {
         const clientEmail = this.configService.get<string>('FIREBASE_CLIENT_EMAIL');
         const privateKey = this.configService.get<string>('FIREBASE_PRIVATE_KEY');
 
-        if (!projectId || !clientEmail || !privateKey) {
+        const isPlaceholder = (val: string) => !val || val.includes('YOUR_');
+
+        if (isPlaceholder(projectId) || isPlaceholder(clientEmail) || isPlaceholder(privateKey)) {
             console.warn(
-                '--- WARNING: Firebase Admin credentials missing. Auth will fail! ---',
+                '--- WARNING: Firebase Admin credentials are placeholders. Push notifications will not work! ---',
             );
             return;
         }

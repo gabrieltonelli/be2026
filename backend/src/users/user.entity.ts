@@ -7,7 +7,7 @@ export class User {
     id: number;
 
     @Column({ unique: true })
-    firebase_uid: string;
+    supabase_uid: string;
 
     @Column({ nullable: true })
     name: string;

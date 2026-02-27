@@ -61,7 +61,7 @@ export class SeedService implements OnApplicationBootstrap {
 
         // 2. Create a Mock User for development
         const mockUser = this.userRepo.create({
-            firebase_uid: 'mock_uid_123',
+            supabase_uid: 'mock_uid_123',
             name: 'Gabriel Tonelli',
             email: 'gabriel@example.com',
             avatar_url: 'https://i.pravatar.cc/150?u=gabriel',

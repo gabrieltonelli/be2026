@@ -10,8 +10,8 @@ export class UsersService {
         private usersRepository: Repository<User>,
     ) { }
 
-    findOneByFirebaseUid(firebaseUid: string): Promise<User> {
-        return this.usersRepository.findOne({ where: { firebase_uid: firebaseUid } });
+    findOneBySupabaseUid(supabaseUid: string): Promise<User> {
+        return this.usersRepository.findOne({ where: { supabase_uid: supabaseUid } });
     }
 
     create(userData: Partial<User>): Promise<User> {
