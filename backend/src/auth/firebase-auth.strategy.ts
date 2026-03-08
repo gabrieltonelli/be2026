@@ -19,13 +19,13 @@ export class FirebaseAuthStrategy extends PassportStrategy(Strategy, 'firebase-a
                 throw new UnauthorizedException('Token inválido');
             }
 
-            // 2. Buscar al usuario en nuestra DB de MySQL por su firebase_uid
-            let user = await this.usersService.findOneByFirebaseUid(decodedToken.uid);
+            // 2. Buscar al usuario en nuestra DB por su uid (ahora supabase_uid)
+            let user = await this.usersService.findOneBySupabaseUid(decodedToken.uid);
 
             // 3. Auto-provisión: Si no existe, lo creamos
             if (!user) {
                 user = await this.usersService.create({
-                    firebase_uid: decodedToken.uid,
+                    supabase_uid: decodedToken.uid,
                     email: decodedToken.email,
                     name: decodedToken.name || decodedToken.email,
                     avatar_url: decodedToken.picture || '',

@@ -8,28 +8,38 @@ import { AmbitsModule } from './ambits/ambits.module';
 import { SeedModule } from './seed/seed.module';
 import { AuthModule } from './auth/auth.module';
 
+import { SupabaseModule } from './supabase/supabase.module';
+
 @Module({
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
+            envFilePath: '.env',
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
-            useFactory: (configService: ConfigService) => ({
-                type: 'postgres',
-                host: configService.get<string>('DB_HOST', 'localhost'),
-                port: configService.get<number>('DB_PORT', 5432),
-                username: configService.get<string>('DB_USERNAME', 'postgres'),
-                password: configService.get<string>('DB_PASSWORD', ''),
-                database: configService.get<string>('DB_DATABASE', 'postgres'),
-                entities: [__dirname + '/**/*.entity{.ts,.js}'],
-                synchronize: true, // Only for development
-                ssl: {
-                    rejectUnauthorized: false,
-                },
-            }),
+            useFactory: (configService: ConfigService) => {
+                const dbConfig = {
+                    type: 'postgres' as const,
+                    host: configService.get<string>('DB_HOST', 'localhost'),
+                    port: configService.get<number>('DB_PORT', 5432),
+                    username: configService.get<string>('DB_USERNAME', 'postgres'),
+                    password: configService.get<string>('DB_PASSWORD', ''),
+                    database: configService.get<string>('DB_DATABASE', 'postgres'),
+                    entities: [__dirname + '/**/*.entity{.ts,.js}'],
+                    synchronize: true, // Only for development
+                    ssl: {
+                        rejectUnauthorized: false,
+                    },
+                };
+                console.log('--- Initializing TypeORM with: ---');
+                console.log('Host:', dbConfig.host);
+                console.log('User:', dbConfig.username);
+                return dbConfig;
+            },
             inject: [ConfigService],
         }),
+        SupabaseModule,
         UsersModule,
         ContactsModule,
         RatingsModule,
