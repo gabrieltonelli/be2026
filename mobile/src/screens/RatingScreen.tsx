@@ -141,7 +141,11 @@ export default function RatingScreen({ navigation }: any) {
     if (loading || !contact || !attribute) {
         return (
             <View className="flex-1 bg-[#050810] items-center justify-center">
-                <Animated.View entering={FadeIn} className="items-center">
+                <View className="absolute inset-0 z-0">
+                    <KaleidoscopeBackground palette="horizonShift" />
+                    <View className="absolute inset-0 bg-black/40" />
+                </View>
+                <Animated.View entering={FadeIn} className="items-center z-10">
                     <Hexagon color="#6366f1" size={48} className="mb-4" />
                     <Text className="text-slate-500 font-bold tracking-widest uppercase text-xs">
                         {loading ? 'Sincronizando...' : 'No hay datos'}
