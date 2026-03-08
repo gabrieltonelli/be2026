@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Hexagon, Shield, Users, ArrowRight, Smartphone, Globe, Zap, Sparkles } from 'lucide-react-native';
+import { Shield, Users, ArrowRight, Smartphone, Globe, Zap, Sparkles } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp, FadeIn, useSharedValue, useAnimatedStyle, withRepeat, withTiming, withSequence } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -57,13 +57,12 @@ export default function WelcomeScreen({ navigation }: any) {
                 {/* Header */}
                 <Animated.View entering={FadeInUp.delay(200).duration(800)} className="flex-row items-center justify-between mb-16 relative z-50">
                     <View className="flex-row items-center gap-3">
-                        <View className="w-12 h-12 rounded-2xl items-center justify-center shadow-2xl relative overflow-hidden">
-                            <LinearGradient
-                                colors={['#6366f1', '#4f46e5']}
-                                style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}
-                            >
-                                <Hexagon color="white" size={24} fill="rgba(255,255,255,0.3)" />
-                            </LinearGradient>
+                        <View className="w-12 h-12 rounded-2xl items-center justify-center shadow-2xl relative overflow-hidden bg-slate-900 border border-slate-800">
+                            <Image
+                                source={require('../../assets/logo/logo4.png')}
+                                style={{ width: 32, height: 32 }}
+                                resizeMode="contain"
+                            />
                         </View>
                         <Text className="text-2xl font-black text-white tracking-tighter">{t('app.name')}</Text>
                     </View>

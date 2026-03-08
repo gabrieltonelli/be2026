@@ -24,12 +24,20 @@ const { width, height } = Dimensions.get('window');
 import { useRatings } from '../hooks/useRatings';
 import KaleidoscopeBackground from '../components/KaleidoscopeBackground';
 
+// Assets
+const LOGO = require('../../assets/logo/logo4.png');
+const EMOJI_ANGRY = require('../../assets/emojis/angry.png');
+const EMOJI_SARCASTIC = require('../../assets/emojis/sarcastic.png');
+const EMOJI_NEUTRAL = require('../../assets/emojis/neutral.png');
+const EMOJI_SMILE = require('../../assets/emojis/smile.png');
+const EMOJI_LOVE = require('../../assets/emojis/love.png');
+
 const EMOJIS = [
-    { id: 1, icon: '😡', labelKey: 'rating.very_negative', color: '#ef4444' },
-    { id: 2, icon: '😠', labelKey: 'rating.negative', color: '#f97316' },
-    { id: 3, icon: '😐', labelKey: 'rating.neutral', color: '#94a3b8' },
-    { id: 4, icon: '🙂', labelKey: 'rating.positive', color: '#84cc16' },
-    { id: 5, icon: '🤩', labelKey: 'rating.very_positive', color: '#22c55e' },
+    { id: 1, img: EMOJI_ANGRY, color: '#ef4444', glow: '#fb7185' },
+    { id: 2, img: EMOJI_SARCASTIC, color: '#f97316', glow: '#fb923c' },
+    { id: 3, img: EMOJI_NEUTRAL, color: '#94a3b8', glow: '#cbd5e1' },
+    { id: 4, img: EMOJI_SMILE, color: '#84cc16', glow: '#bef264' },
+    { id: 5, img: EMOJI_LOVE, color: '#ec4899', glow: '#f472b6' },
 ];
 
 export default function RatingScreen({ navigation }: any) {
@@ -167,8 +175,8 @@ export default function RatingScreen({ navigation }: any) {
 
                 {/* Header */}
                 <View className="px-6 pt-4 flex-row justify-between items-center z-50">
-                    <TouchableOpacity className="w-11 h-11 bg-slate-900/80 rounded-xl items-center justify-center border border-slate-800 shadow-xl">
-                        <Menu color="#94a3b8" size={22} />
+                    <TouchableOpacity className="w-11 h-11 bg-slate-900/80 rounded-xl items-center justify-center border border-slate-800 shadow-xl overflow-hidden">
+                        <Image source={LOGO} style={{ width: 24, height: 24 }} resizeMode="contain" />
                     </TouchableOpacity>
 
                     <View className="items-center bg-slate-900/50 px-4 py-1.5 rounded-full border border-slate-800/50">
@@ -213,45 +221,52 @@ export default function RatingScreen({ navigation }: any) {
                 </View>
 
                 {/* Contact Area */}
-                <View className="flex-[0.4] items-center justify-center z-10 px-8">
+                <View className="flex-[0.35] items-center justify-center z-10 px-8">
                     <Animated.View key={currentContactIdx} entering={FadeInDown.springify()} className="items-center">
-                        <View className="w-28 h-28 rounded-full items-center justify-center mb-4 relative shadow-2xl">
+                        <View className="w-24 h-24 rounded-full items-center justify-center mb-3 relative">
                             {/* Animated ring */}
-                            <View className="absolute inset-0 border-[3px] border-slate-800/50 rounded-full" />
-                            <View className="absolute inset-[-4px] border border-indigo-500/30 rounded-full" />
+                            <View className="absolute inset-0 border-[2px] border-slate-800/50 rounded-full" />
+                            <View className="absolute inset-[-6px] border border-indigo-500/20 rounded-full" />
+                            <View className="absolute inset-[-12px] border border-indigo-500/10 rounded-full" />
 
                             <LinearGradient
-                                colors={[`${contact.avatarColor || '#6366f1'}40`, `${contact.avatarColor || '#6366f1'}10`]}
-                                style={{ width: '100%', height: '100%', borderRadius: 100, alignItems: 'center', justifyContent: 'center' }}
+                                colors={[`${contact.avatarColor || '#6366f1'}`, `${contact.avatarColor || '#6366f1'}40`]}
+                                style={{ width: '100%', height: '100%', borderRadius: 100, alignItems: 'center', justifyContent: 'center', padding: 4 }}
                             >
-                                <Text className="font-black text-5xl" style={{ color: contact.avatarColor || '#6366f1', textShadowColor: contact.avatarColor || '#6366f1', textShadowRadius: 10 }}>
-                                    {contact.name.charAt(0)}
-                                </Text>
+                                <View className="w-full h-full rounded-full bg-slate-900 items-center justify-center">
+                                    <Text className="font-black text-4xl" style={{ color: contact.avatarColor || '#6366f1', textShadowColor: contact.avatarColor || '#6366f1', textShadowRadius: 15 }}>
+                                        {contact.name.charAt(0)}
+                                    </Text>
+                                </View>
                             </LinearGradient>
 
-                            <View className="absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-4 border-[#050810]" />
+                            <View className="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-4 border-[#050810] shadow-lg shadow-green-500" />
                         </View>
 
-                        <Text className="text-white font-black text-2xl tracking-tight">{contact.name}</Text>
-                        <Text className="text-slate-500 font-bold text-[10px] tracking-[2px] uppercase mt-1">
-                            {contact.role || 'CONTACTO'} • 24 CALIFICACIONES
-                        </Text>
+                        <Text className="text-white font-black text-xl tracking-tight uppercase shadow-xl">{contact.name}</Text>
+                        <View className="flex-row items-center gap-2 mt-1">
+                            <View className="h-1 w-8 bg-indigo-500 rounded-full" />
+                            <Text className="text-indigo-400 font-black text-[9px] tracking-[2px] uppercase">
+                                LVL 24 • {t('common.syncing')}
+                            </Text>
+                            <View className="h-1 w-8 bg-indigo-500 rounded-full" />
+                        </View>
                     </Animated.View>
                 </View>
 
                 {/* Deck Area */}
-                <View className="flex-[0.6] items-center px-6 pb-28 z-20">
-                    <View className="relative w-full h-[320px] justify-center">
+                <View className="flex-[0.65] items-center px-6 pb-28 z-20">
+                    <View className="relative w-full h-[340px] justify-center">
 
-                        {/* Stack background cards */}
+                        {/* Stack background cards with perspective */}
                         {[...Array(2)].map((_, i) => (
                             <View
                                 key={i}
-                                className="absolute w-full h-full bg-slate-900 border border-slate-800/50 rounded-[2.5rem]"
+                                className="absolute w-full h-full bg-slate-900 border border-slate-800/50 rounded-[3rem]"
                                 style={{
-                                    top: (i + 1) * 12,
-                                    transform: [{ scale: 1 - (i + 1) * 0.05 }],
-                                    opacity: 0.3 - i * 0.1,
+                                    top: (i + 1) * 15,
+                                    transform: [{ scale: 1 - (i + 1) * 0.08 }, { perspective: 1000 }, { rotateX: '10deg' }],
+                                    opacity: 0.2 - i * 0.1,
                                     zIndex: -i
                                 }}
                             />
@@ -260,66 +275,97 @@ export default function RatingScreen({ navigation }: any) {
                         {/* Main Interaction Card */}
                         <GestureDetector gesture={gesture}>
                             <Animated.View style={[animatedCardStyle]} className="w-full h-full">
-                                <View className="w-full h-full bg-slate-900 rounded-[2.5rem] p-7 shadow-2xl border border-slate-800 relative overflow-hidden">
-                                    {/* Inner glows */}
-                                    <View className="absolute -top-10 -left-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl" />
-                                    <View className="absolute -bottom-10 -right-10 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl" />
+                                <View className="w-full h-full bg-slate-950 rounded-[3rem] shadow-2xl border-2 border-slate-800 relative overflow-hidden">
+                                    {/* Glassmorphism Surface */}
+                                    <LinearGradient
+                                        colors={['rgba(30,41,59,0.7)', 'rgba(15,23,42,0.95)']}
+                                        style={{ width: '100%', height: '100%', padding: 28 }}
+                                    >
+                                        {/* Scanline Effect */}
+                                        <View className="absolute inset-0 bg-white/5 opacity-5" style={{ height: 2 }} />
 
-                                    <View className="flex-row justify-between items-center mb-6">
-                                        <View className="bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700/50">
-                                            <Text className="text-indigo-400 font-black text-[10px] tracking-widest">ATRIBUTO {currentAttrIdx + 1}/3</Text>
+                                        {/* Inner glows */}
+                                        <View className="absolute -top-20 -left-20 w-48 h-48 bg-indigo-600/20 rounded-full blur-[60px]" />
+                                        <View className="absolute -bottom-20 -right-20 w-48 h-48 bg-cyan-600/10 rounded-full blur-[60px]" />
+
+                                        <View className="flex-row justify-between items-center mb-6">
+                                            <View className="bg-indigo-500/20 px-4 py-1.5 rounded-full border border-indigo-500/30">
+                                                <Text className="text-indigo-300 font-black text-[10px] tracking-[3px] uppercase">
+                                                    {t('rating.attribute')} {currentAttrIdx + 1}/3
+                                                </Text>
+                                            </View>
+                                            <TouchableOpacity onPress={() => setIsFlipped(!isFlipped)}>
+                                                <View className="w-8 h-8 rounded-full bg-slate-800 items-center justify-center border border-slate-700">
+                                                    <Info color="#64748b" size={16} />
+                                                </View>
+                                            </TouchableOpacity>
                                         </View>
-                                        <TouchableOpacity onPress={() => setIsFlipped(!isFlipped)}>
-                                            <Info color="#64748b" size={18} />
-                                        </TouchableOpacity>
-                                    </View>
 
-                                    <View className="items-center justify-center flex-1 py-4">
-                                        <Text className="text-white font-black text-2xl text-center leading-tight mb-4">
-                                            {attribute.question}
-                                        </Text>
+                                        <View className="items-center justify-center flex-1 py-4">
+                                            <Text className="text-white font-black text-3xl text-center leading-[38px] tracking-tight mb-6" style={{ textShadowColor: 'rgba(255,255,255,0.2)', textShadowRadius: 10 }}>
+                                                {attribute.question}
+                                            </Text>
 
-                                        {/* Visual Scale Indicator */}
-                                        <View className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden flex-row">
-                                            <View className="h-full w-1/2 bg-red-500/20" />
-                                            <View className="h-full w-1/2 bg-green-500/20" />
-                                            <View className="absolute left-1/2 top-0 w-1 h-full bg-slate-700 mt-[-2px] z-10" />
+                                            {/* Visual Scale Indicator - Gaming Style */}
+                                            <View className="w-full h-2 bg-slate-800 rounded-full overflow-hidden flex-row border border-slate-700/50">
+                                                <LinearGradient
+                                                    colors={['#ef4444', '#f97316']}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    style={{ width: '50%', height: '100%', opacity: 0.4 }}
+                                                />
+                                                <LinearGradient
+                                                    colors={['#84cc16', '#22c55e']}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    style={{ width: '50%', height: '100%', opacity: 0.4 }}
+                                                />
+                                                <View className="absolute left-1/2 top-[-2px] w-1 h-6 bg-white/40 z-10" />
+                                            </View>
                                         </View>
-                                    </View>
 
-                                    {/* Emojis Selector */}
-                                    <View className="flex-row justify-between items-end mt-4">
-                                        {EMOJIS.map((emoji) => {
-                                            const isSelected = selectedEmoji === emoji.id;
-                                            return (
-                                                <TouchableOpacity
-                                                    key={emoji.id}
-                                                    activeOpacity={0.7}
-                                                    onPress={() => handleEmojiSelect(emoji.id)}
-                                                    className="items-center"
-                                                >
-                                                    <Animated.View
-                                                        className={`w-12 h-12 rounded-2xl items-center justify-center mb-2 shadow-xl border ${isSelected ? 'border-2' : 'bg-slate-800/50 border-slate-700/50'}`}
-                                                        style={{
-                                                            backgroundColor: isSelected ? emoji.color : 'rgba(30,41,59,0.5)',
-                                                            borderColor: isSelected ? 'white' : 'rgba(51,65,85,0.5)',
-                                                            transform: [{ scale: isSelected ? 1.2 : 1 }]
-                                                        }}
+                                        {/* Emojis Selector - 3D PNG GRID */}
+                                        <View className="flex-row justify-between items-center mt-6">
+                                            {EMOJIS.map((emoji) => {
+                                                const isSelected = selectedEmoji === emoji.id;
+                                                return (
+                                                    <TouchableOpacity
+                                                        key={emoji.id}
+                                                        activeOpacity={0.7}
+                                                        onPress={() => handleEmojiSelect(emoji.id)}
+                                                        className="items-center"
                                                     >
-                                                        <Text className="text-2xl">{emoji.icon}</Text>
-                                                        {isSelected && (
-                                                            <View className="absolute inset-0 bg-white/20 rounded-2xl" />
-                                                        )}
-                                                    </Animated.View>
-                                                </TouchableOpacity>
-                                            );
-                                        })}
-                                    </View>
+                                                        <Animated.View
+                                                            className="w-14 h-14 rounded-[1.2rem] items-center justify-center transition-all duration-300"
+                                                            style={{
+                                                                backgroundColor: isSelected ? `${emoji.color}30` : 'rgba(30,41,59,0.3)',
+                                                                borderWidth: isSelected ? 2 : 1,
+                                                                borderColor: isSelected ? emoji.color : 'rgba(71,85,105,0.3)',
+                                                                transform: [{ scale: isSelected ? 1.25 : 1 }],
+                                                                shadowColor: isSelected ? emoji.color : 'transparent',
+                                                                shadowRadius: isSelected ? 20 : 0,
+                                                                shadowOpacity: isSelected ? 0.6 : 0,
+                                                                elevation: isSelected ? 10 : 0
+                                                            }}
+                                                        >
+                                                            <Image source={emoji.img} style={{ width: 36, height: 36, opacity: isSelected ? 1 : 0.8 }} resizeMode="contain" />
+                                                            {isSelected && (
+                                                                <View
+                                                                    className="absolute inset-0 rounded-[1.2rem]"
+                                                                    style={{ backgroundColor: emoji.color, opacity: 0.1 }}
+                                                                />
+                                                            )}
+                                                        </Animated.View>
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
 
-                                    <View className="flex-row justify-between px-1 mt-6">
-                                        <Text className="text-red-500/70 font-black text-[9px] uppercase tracking-widest">{attribute.negative_term}</Text>
-                                        <Text className="text-green-500/70 font-black text-[9px] uppercase tracking-widest">{attribute.positive_term}</Text>
-                                    </View>
+                                        <View className="flex-row justify-between px-1 mt-6 opacity-60">
+                                            <Text className="text-red-500 font-black text-[8px] uppercase tracking-[2px]">{attribute.negative_term}</Text>
+                                            <Text className="text-green-500 font-black text-[8px] uppercase tracking-[2px]">{attribute.positive_term}</Text>
+                                        </View>
+                                    </LinearGradient>
                                 </View>
                             </Animated.View>
                         </GestureDetector>
