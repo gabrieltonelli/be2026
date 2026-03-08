@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator, Dimensions } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Hexagon, Shield, Users, ArrowRight, Smartphone, Globe, Zap, Sparkles } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp, FadeIn, useSharedValue, useAnimatedStyle, withRepeat, withTiming, withSequence } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
@@ -155,10 +156,10 @@ export default function WelcomeScreen({ navigation }: any) {
                 <View className="mt-auto pb-10 items-center">
                     <View className="flex-row items-center gap-2 mb-4">
                         <View className="h-[1px] w-8 bg-slate-800" />
-                        <Text className="text-slate-600 font-black text-[9px] tracking-[3px] uppercase">Trusted by 10k+ people</Text>
+                        <Text className="text-slate-600 font-white text-[9px] tracking-[3px] uppercase">{t('common.trusted')}</Text>
                         <View className="h-[1px] w-8 bg-slate-800" />
                     </View>
-                    <Text className="text-center text-slate-500 text-xs font-bold leading-relaxed px-10 opacity-60">
+                    <Text className="text-center text-slate-500 text-xs font-bold font-white leading-relaxed px-10 opacity-60">
                         {t('footer')}
                     </Text>
                 </View>

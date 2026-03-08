@@ -4,6 +4,7 @@ import Animated, { FadeIn, FadeOut, ZoomIn, ZoomOut } from 'react-native-reanima
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react-native';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 
 interface CustomAlertProps {
     visible: boolean;
@@ -20,6 +21,7 @@ export default function CustomAlert({
     onClose,
     type = 'info'
 }: CustomAlertProps) {
+    const { t } = useTranslation();
     if (!visible) return null;
 
     const getIcon = () => {
@@ -84,7 +86,7 @@ export default function CustomAlert({
                                 end={{ x: 1, y: 0 }}
                                 className="w-full h-full items-center justify-center"
                             >
-                                <Text className="text-white font-black text-lg tracking-widest uppercase">Entendido</Text>
+                                <Text className="text-white font-black text-lg tracking-widest uppercase">{t('common.understand')}</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>

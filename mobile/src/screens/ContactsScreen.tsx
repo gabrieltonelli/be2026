@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Play, Shield, ChevronLeft, Filter, Hexagon } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
@@ -54,11 +55,10 @@ export default function ContactsScreen({ navigation }: any) {
                         {t('contacts.desc')}
                     </Text>
                 </View>
-
                 {loading ? (
                     <View className="items-center justify-center py-20">
                         <Hexagon color="#6366f1" size={32} />
-                        <Text className="text-slate-500 font-bold tracking-widest uppercase text-[10px] mt-4">Cargando...</Text>
+                        <Text className="text-slate-500 font-bold tracking-widest uppercase text-[10px] mt-4">{t('common.loading')}</Text>
                     </View>
                 ) : (
                     <View className="gap-5">
@@ -82,7 +82,7 @@ export default function ContactsScreen({ navigation }: any) {
                                         <View className="flex-row items-center gap-2">
                                             <Text className="text-slate-500 font-bold text-[10px] tracking-widest uppercase">{(contact as any).source || 'MANUAL'}</Text>
                                             <View className="w-1 h-1 bg-slate-700 rounded-full" />
-                                            <Text className="text-indigo-400/80 font-black text-[10px] uppercase">{(contact as any).ratings || 0} RATINGS</Text>
+                                            <Text className="text-indigo-400/80 font-black text-[10px] uppercase">{(contact as any).ratings || 0} {t('rating.stats')}</Text>
                                         </View>
                                     </View>
 
@@ -105,10 +105,10 @@ export default function ContactsScreen({ navigation }: any) {
                             <View className="w-12 h-12 rounded-2xl bg-[#2dd4bf]/20 items-center justify-center">
                                 <Shield color="#2dd4bf" size={24} />
                             </View>
-                            <Text className="text-white font-black text-xl tracking-tight">Privacidad 100%</Text>
+                            <Text className="text-white font-black text-xl tracking-tight">{t('privacy.title')}</Text>
                         </View>
                         <Text className="text-[#2dd4bf]/80 text-[15px] font-medium leading-[22px] mb-6">
-                            Tus calificaciones son anónimas. Be protege tu identidad mediante algoritmos de agregación.
+                            {t('privacy.desc')}
                         </Text>
                     </LinearGradient>
                 </Animated.View>

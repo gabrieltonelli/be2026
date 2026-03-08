@@ -1,5 +1,6 @@
 import React, { useState, useRef, useMemo } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, Dimensions, Image, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, Image, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Menu, Settings, LogOut, Moon, Search, Star, Hexagon, BarChart2, SkipForward, Zap, Info } from 'lucide-react-native';
 import Animated, {
     FadeInDown,

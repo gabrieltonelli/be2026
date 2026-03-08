@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, TextInput, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInRight, FadeInDown, FadeOutLeft, FadeIn } from 'react-native-reanimated';
 import { ChevronLeft, Briefcase, Heart, Smile, Users, Hexagon, ArrowRight, Star, Lock } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
@@ -128,10 +129,10 @@ export default function WizardScreen({ navigation }: any) {
 
                         <View className="gap-4">
                             <TouchableOpacity activeOpacity={0.8} onPress={handleLogin} className="bg-[#1877F2]/90 p-5 rounded-[2rem] flex-row items-center justify-center gap-3 border-b-4 border-[#0e5cad]">
-                                <Text className="text-white font-black text-lg tracking-tight">Continuar con Facebook</Text>
+                                <Text className="text-white font-black text-lg tracking-tight">{t('wizard.login.facebook')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.8} onPress={handleLogin} className="bg-white p-5 rounded-[2rem] flex-row items-center justify-center gap-3 border-b-4 border-slate-300">
-                                <Text className="text-slate-900 font-black text-lg tracking-tight">Continuar con Google</Text>
+                                <Text className="text-slate-900 font-black text-lg tracking-tight">{t('wizard.login.google')}</Text>
                             </TouchableOpacity>
                         </View>
                     </Animated.View>
@@ -146,10 +147,10 @@ export default function WizardScreen({ navigation }: any) {
                         <Text className="text-slate-400 mb-8 text-lg font-medium leading-relaxed">{t('wizard.ambits.desc')}</Text>
 
                         <View className="flex-row flex-wrap justify-between">
-                            <AmbitButton id="laboral" label="Laboral" icon={Briefcase} color="#6366f1" />
-                            <AmbitButton id="social" label="Social" icon={Users} color="#8b5cf6" />
-                            <AmbitButton id="salud" label="Salud" icon={Heart} color="#ec4899" />
-                            <AmbitButton id="artistico" label="Artístico" icon={Smile} color="#f59e0b" />
+                            <AmbitButton id="laboral" label={t('wizard.ambit.laboral')} icon={Briefcase} color="#6366f1" />
+                            <AmbitButton id="social" label={t('wizard.ambit.social')} icon={Users} color="#8b5cf6" />
+                            <AmbitButton id="salud" label={t('wizard.ambit.health')} icon={Heart} color="#ec4899" />
+                            <AmbitButton id="artistico" label={t('wizard.ambit.artistic')} icon={Smile} color="#f59e0b" />
                         </View>
                     </Animated.View>
                 )}
@@ -162,21 +163,20 @@ export default function WizardScreen({ navigation }: any) {
                         <Text className="text-4xl font-black text-white mb-3 tracking-tighter leading-none">{t('wizard.workspace.title')}</Text>
                         <Text className="text-slate-400 mb-8 text-lg font-medium leading-relaxed">
                             {t('wizard.workspace.desc')} {"\n"}
-                            <Text className="text-[12px] text-slate-500 font-bold italic">Si no lo haces ahora, podrás configurarlo más adelante desde los ajustes.</Text>
                         </Text>
 
                         <View className="relative mt-10">
                             <TextInput
-                                className="bg-slate-900 text-white p-6 rounded-[2rem] text-xl font-black tracking-[4px] text-center border-2 border-slate-800 focus:border-cyan-500/50 shadow-2xl z-10"
-                                placeholder="EJ: BE-2026XYZ"
+                                className="bg-slate-900 text-white p-6 rounded-[2rem] text-xl font-black tracking-[4px] text-center border-2 border-slate-800 focus:border-cyan-500/50 shadow-2xl"
+                                placeholder={t('wizard.workspace.placeholder')}
                                 placeholderTextColor="#334155"
                                 value={workspaceCode}
                                 onChangeText={setWorkspaceCode}
                                 autoCapitalize="characters"
                             />
-                            <View className="absolute -top-4 left-0 right-0 items-center z-50">
-                                <View className="bg-slate-900 px-6 py-2 rounded-full border border-slate-800 shadow-2xl">
-                                    <Text className="text-[11px] font-black text-cyan-400 tracking-widest uppercase">Código Especial</Text>
+                            <View className="absolute -top-4 left-0 right-0 items-center z-9999">
+                                <View className="bg-slate-900 px-6 py-2 rounded-full border border-slate-800 shadow-2xl z-9999">
+                                    <Text className="text-[11px] font-black text-cyan-400 tracking-widest uppercase">{t('wizard.workspace.badge')}</Text>
                                 </View>
                             </View>
                         </View>
@@ -193,10 +193,10 @@ export default function WizardScreen({ navigation }: any) {
 
                         <View className="gap-4">
                             <TouchableOpacity activeOpacity={0.8} onPress={nextStep} className="bg-[#0077B5] p-5 rounded-[2rem] flex-row items-center justify-center border-b-4 border-[#045d8b]">
-                                <Text className="text-white font-black text-lg">Conectar LinkedIn</Text>
+                                <Text className="text-white font-black text-lg">{t('wizard.networks.linkedin')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.8} onPress={nextStep} className="bg-slate-900 border-2 border-slate-800 p-5 rounded-[2rem] flex-row items-center justify-center border-b-4 border-slate-950">
-                                <Text className="text-white font-black text-lg">Conectar Instagram</Text>
+                                <Text className="text-white font-black text-lg">{t('wizard.networks.instagram')}</Text>
                             </TouchableOpacity>
                         </View>
                     </Animated.View>
@@ -219,7 +219,7 @@ export default function WizardScreen({ navigation }: any) {
                             onPress={() => setStep(prev => prev - 1)}
                             className="flex-1 p-5 rounded-[1.8rem] items-center justify-center border border-slate-800"
                         >
-                            <Text className="text-slate-500 font-black text-xs tracking-widest uppercase">{t('wizard.back') || 'Volver'}</Text>
+                            <Text className="text-slate-500 font-black text-xs tracking-widest uppercase">{t('wizard.back')}</Text>
                         </TouchableOpacity>
                     )}
                     <TouchableOpacity
