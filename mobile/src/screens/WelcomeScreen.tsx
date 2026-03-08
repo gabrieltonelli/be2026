@@ -4,6 +4,7 @@ import { Hexagon, Shield, Users, ArrowRight, Smartphone, Globe, Zap, Sparkles } 
 import Animated, { FadeInDown, FadeInUp, FadeIn, useSharedValue, useAnimatedStyle, withRepeat, withTiming, withSequence } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
+import KaleidoscopeBackground from '../components/KaleidoscopeBackground';
 
 const { width } = Dimensions.get('window');
 
@@ -45,20 +46,10 @@ export default function WelcomeScreen({ navigation }: any) {
 
     return (
         <SafeAreaView className="flex-1 bg-[#050810]">
-            {/* Dynamic Background Glows */}
+            {/* Background Kaleidoscope Effect */}
             <View className="absolute inset-0 z-0">
-                <Animated.View
-                    entering={FadeIn.duration(2000)}
-                    className="absolute -top-20 -left-20 w-[300px] h-[300px] bg-indigo-600/20 rounded-full blur-[100px]"
-                />
-                <Animated.View
-                    entering={FadeIn.duration(2000).delay(500)}
-                    className="absolute top-1/2 -right-20 w-[300px] h-[300px] bg-cyan-600/10 rounded-full blur-[100px]"
-                />
-                <Animated.View
-                    entering={FadeIn.duration(2000).delay(1000)}
-                    className="absolute -bottom-20 left-1/4 w-[200px] h-[200px] bg-purple-600/10 rounded-full blur-[80px]"
-                />
+                <KaleidoscopeBackground palette="cosmicInk" />
+                <View className="absolute inset-0 bg-black/40" />
             </View>
 
             <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="px-8 pt-10 z-10">

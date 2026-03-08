@@ -6,6 +6,8 @@ import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRatings } from '../hooks/useRatings';
 
+import KaleidoscopeBackground from '../components/KaleidoscopeBackground';
+
 const { width } = Dimensions.get('window');
 
 export default function ContactsScreen({ navigation }: any) {
@@ -17,12 +19,10 @@ export default function ContactsScreen({ navigation }: any) {
 
     return (
         <SafeAreaView className="flex-1 bg-[#050810]">
-            {/* Background Dynamic Glows */}
+            {/* Background Kaleidoscope Effect */}
             <View className="absolute inset-0 z-0">
-                <Animated.View
-                    entering={FadeIn.duration(2000)}
-                    className="absolute -top-40 -right-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px]"
-                />
+                <KaleidoscopeBackground palette="filteredReality" />
+                <View className="absolute inset-0 bg-black/40" />
             </View>
 
             {/* Custom Header */}

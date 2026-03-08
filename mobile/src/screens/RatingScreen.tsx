@@ -21,6 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width, height } = Dimensions.get('window');
 
 import { useRatings } from '../hooks/useRatings';
+import KaleidoscopeBackground from '../components/KaleidoscopeBackground';
 
 const EMOJIS = [
     { id: 1, icon: '😡', labelKey: 'rating.very_negative', color: '#ef4444' },
@@ -153,17 +154,10 @@ export default function RatingScreen({ navigation }: any) {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <SafeAreaView className="flex-1 bg-[#050810] relative">
-                {/* Background Dynamic Glows */}
+                {/* Background Kaleidoscope Effect */}
                 <View className="absolute inset-0 z-0">
-                    <Animated.View
-                        entering={FadeIn.duration(2000)}
-                        className="absolute -top-20 -right-20 w-80 h-80 bg-indigo-600/20 rounded-full blur-[100px]"
-                    />
-                    <Animated.View
-                        entering={FadeIn.duration(2000).delay(500)}
-                        className="absolute bottom-20 -left-20 w-80 h-80 bg-cyan-600/10 rounded-full blur-[100px]"
-                    />
-                    <View className="absolute top-1/2 left-1/4 w-32 h-32 bg-purple-600/10 rounded-full blur-[60px]" />
+                    <KaleidoscopeBackground palette="horizonShift" />
+                    <View className="absolute inset-0 bg-black/40" />
                 </View>
 
                 {/* Header */}

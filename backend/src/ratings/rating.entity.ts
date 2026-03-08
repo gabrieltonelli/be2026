@@ -31,7 +31,7 @@ export class Rating {
     @JoinColumn({ name: 'attribute_id' })
     attribute: Attribute;
 
-    @Column({ type: 'tinyint' })
+    @Column({ type: 'smallint' })
     score: number;
 
     @CreateDateColumn()
