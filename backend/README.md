@@ -1,18 +1,18 @@
 # Be - Backend (NestJS)
 
-Este es el backend oficial del proyecto **Be**, una plataforma de feedback anónimo. Está construido sobre **NestJS**, utiliza **TypeORM** para la persistencia de datos en **MySQL** y está diseñado para integrarse con Firebase Auth.
+Este es el backend oficial del proyecto **Be**, una plataforma de feedback anónimo. Está construido sobre **NestJS**, utiliza **TypeORM** para la persistencia de datos en **PostgreSQL (Supabase)** y está diseñado para integrarse con Firebase Auth.
 
 ## 🚀 Tecnologías
 
 - **NestJS**: Framework de aplicaciones de servidor.
 - **TypeORM**: ORM para TypeScript y JavaScript.
-- **MySQL**: Base de datos relacional.
+- **PostgreSQL (Supabase)**: Base de datos relacional para escalabilidad y facilidad de despliegue.
 - **Firebase Admin SDK**: Para autenticación segura y validación de tokens.
 
 ## 🛠️ Requisitos previos
 
 - **Node.js**: v18 o superior.
-- **Docker**: Para ejecutar la base de datos MySQL.
+- **PostgreSQL**: Local o instancia remota (Supabase).
 - **NPM**: Gestor de paquetes.
 
 ## ⚙️ Configuración

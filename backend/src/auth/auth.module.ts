@@ -35,14 +35,21 @@ export class AuthModule implements OnModuleInit {
 
         // Initialize Firebase Admin SDK
         if (admin.apps.length === 0) {
-            admin.initializeApp({
-                credential: admin.credential.cert({
-                    projectId,
-                    clientEmail,
-                    privateKey: privateKey.replace(/\\n/g, '\n'),
-                }),
-            });
-            console.log('--- Firebase Admin Initialized Successfully ---');
+            try {
+                const formattedKey = privateKey.replace(/\\n/g, '\n').replace(/"/g, '');
+                admin.initializeApp({
+                    credential: admin.credential.cert({
+                        projectId,
+                        clientEmail,
+                        privateKey: formattedKey,
+                    }),
+                });
+                console.log('--- Firebase Admin Initialized Successfully ---');
+            } catch (error) {
+                console.error('--- ERROR: Failed to initialize Firebase Admin ---');
+                console.error(error.message);
+                console.warn('Push notifications and Firebase Auth features will be disabled.');
+            }
         }
     }
 }
