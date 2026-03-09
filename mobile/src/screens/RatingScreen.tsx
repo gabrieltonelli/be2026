@@ -93,11 +93,11 @@ export default function RatingScreen({ navigation }: any) {
     const ringPulse = useSharedValue(1);
 
     React.useEffect(() => {
-        // Periodic shine sweep
+        // Periodic shine sweep - Wider interval, smoother move
         const interval = setInterval(() => {
-            shineX.value = -width;
-            shineX.value = withTiming(width * 2, { duration: 1500 });
-        }, 4000);
+            shineX.value = -width * 1.5;
+            shineX.value = withTiming(width * 2.5, { duration: 2500 });
+        }, 8000);
 
         // Continuous frosted glass movement
         glassAnim.value = withRepeat(
@@ -172,7 +172,10 @@ export default function RatingScreen({ navigation }: any) {
     });
 
     const animatedShineStyle = useAnimatedStyle(() => ({
-        transform: [{ translateX: shineX.value }, { skewX: '-20deg' }],
+        transform: [
+            { translateX: shineX.value },
+            { rotate: '35deg' }
+        ],
     }));
 
     const animatedGlassStyle = useAnimatedStyle(() => ({
@@ -240,8 +243,6 @@ export default function RatingScreen({ navigation }: any) {
                 <View className="absolute inset-0 z-0">
                     <KaleidoscopeBackground palette="cosmicInk" />
                     <View className="absolute inset-0 bg-black/30" />
-                    {/* Radial glow to make the center pop */}
-                    <View className="absolute inset-x-0 top-1/2 -bottom-1/2 bg-indigo-500/10 rounded-full blur-[120px]" />
                 </View>
 
                 <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
@@ -360,8 +361,6 @@ export default function RatingScreen({ navigation }: any) {
                     <View className="flex-[0.7] items-center px-4 pb-28 z-20">
                         <View className="relative w-full h-[400px] justify-center">
 
-                            {/* Neon "Floor" Glow for Impact */}
-                            <View className="absolute -bottom-10 left-10 right-10 h-24 bg-indigo-500/30 blur-[80px] rounded-full" />
 
                             {/* Stack background cards with deep perspective */}
                             {[...Array(2)].map((_, i) => (
@@ -380,10 +379,10 @@ export default function RatingScreen({ navigation }: any) {
                             {/* Main Interaction Card */}
                             <GestureDetector gesture={gesture}>
                                 <Animated.View style={[animatedCardStyle, { width: '100%', height: '100%' }]}>
-                                    {/* Reactive Border Gradient Wrapper */}
-                                    <View className="flex-1 bg-transparent rounded-[2.5rem] p-[1.5px] overflow-hidden shadow-[0_45px_80px_-15px_rgba(0,0,0,0.9)]">
+                                    {/* Metallic Silver Notorious Border Wrapper */}
+                                    <View className="flex-1 bg-slate-400 rounded-[2.5rem] p-[2.5px] overflow-hidden shadow-[0_65px_100px_-20px_rgba(0,0,0,1)]">
                                         <LinearGradient
-                                            colors={['rgba(255,255,255,0.4)', 'rgba(99,102,241,0.2)', 'rgba(128,95,247,0.2)', 'rgba(255,255,255,0.1)']}
+                                            colors={['#ffffff', '#cbd5e1', '#94a3b8', '#cbd5e1', '#ffffff']}
                                             start={{ x: 0, y: 0 }}
                                             end={{ x: 1, y: 1 }}
                                             style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
@@ -441,17 +440,23 @@ export default function RatingScreen({ navigation }: any) {
                                             <View className="absolute bottom-4 left-4 w-6 h-6 border-b border-l border-indigo-500/40 rounded-bl-lg" />
                                             <View className="absolute bottom-4 right-4 w-6 h-6 border-b border-r border-indigo-500/40 rounded-br-lg" />
 
-                                            {/* Periodic Shine Sweep */}
+                                            {/* Periodic Shine Sweep - Diagonal & Smooth */}
                                             <Animated.View
                                                 style={[animatedShineStyle, {
                                                     position: 'absolute',
-                                                    top: 0,
-                                                    bottom: 0,
-                                                    width: 120,
-                                                    backgroundColor: 'rgba(255,255,255,0.06)',
+                                                    top: -height,
+                                                    bottom: -height,
+                                                    width: 350,
                                                     zIndex: 20
                                                 }]}
-                                            />
+                                            >
+                                                <LinearGradient
+                                                    colors={['transparent', 'rgba(255,255,255,0)', 'rgba(255,255,255,0.12)', 'rgba(255,255,255,0)', 'transparent']}
+                                                    start={{ x: 0, y: 0.5 }}
+                                                    end={{ x: 1, y: 0.5 }}
+                                                    style={{ flex: 1 }}
+                                                />
+                                            </Animated.View>
 
                                             {/* Surface Layer with Main Labels */}
                                             <View style={{ flex: 1, padding: 24, zIndex: 30 }}>
