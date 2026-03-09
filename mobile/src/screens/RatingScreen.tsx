@@ -11,6 +11,8 @@ import Animated, {
     withSpring,
     withTiming,
     withRepeat,
+    withDelay,
+    Easing,
     interpolate,
     Extrapolate,
     withSequence,
@@ -45,6 +47,73 @@ const EMOJIS = [
     { id: 4, img: EMOJI_SMILE, color: '#84cc16', glow: '#bef264' },
     { id: 5, img: EMOJI_LOVE, color: '#ec4899', glow: '#f472b6' },
 ];
+
+const BUBBLE_CONFIGS = [
+    { left: 10, size: 40, delay: 0, duration: 25000, targetRotate: 600, borderRadius: 12 },
+    { left: 20, size: 80, delay: 2000, duration: 17000, targetRotate: 400, borderRadius: 24, tint: 'rgba(99, 102, 241, 0.15)' },
+    { left: 25, size: 30, delay: 4000, duration: 24000, targetRotate: 700, borderRadius: 8 },
+    { left: 40, size: 60, delay: 0, duration: 22000, targetRotate: 350, borderRadius: 16, tint: 'rgba(255, 255, 255, 0.25)' },
+    { left: 70, size: 50, delay: 0, duration: 20000, targetRotate: 700, borderRadius: 15 },
+    { left: 80, size: 120, delay: 3000, duration: 28000, targetRotate: 300, borderRadius: 30, tint: 'rgba(128, 95, 247, 0.15)' },
+    { left: 32, size: 160, delay: 7000, duration: 32000, targetRotate: 200, borderRadius: 40 },
+    { left: 55, size: 20, delay: 15000, duration: 40000, targetRotate: 800, borderRadius: 6 },
+    { left: 25, size: 15, delay: 2000, duration: 40000, targetRotate: 900, borderRadius: 4, tint: 'rgba(255, 255, 255, 0.3)' },
+    { left: 90, size: 140, delay: 11000, duration: 35000, targetRotate: 400, borderRadius: 35 },
+];
+
+const AnimatedFloatingShape = ({ config }: { config: any }) => {
+    const translateY = useSharedValue(0);
+    const rotate = useSharedValue(0);
+
+    React.useEffect(() => {
+        translateY.value = withDelay(
+            config.delay,
+            withRepeat(
+                withTiming(-height * 1.2, { duration: config.duration, easing: Easing.linear }),
+                -1,
+                false
+            )
+        );
+
+        rotate.value = withDelay(
+            config.delay,
+            withRepeat(
+                withTiming(config.targetRotate, { duration: config.duration, easing: Easing.linear }),
+                -1,
+                false
+            )
+        );
+    }, []);
+
+    const style = useAnimatedStyle(() => ({
+        transform: [
+            { translateY: translateY.value },
+            { rotate: `${rotate.value}deg` }
+        ]
+    }));
+
+    return (
+        <Animated.View
+            style={[{
+                position: 'absolute',
+                bottom: -200,
+                left: `${config.left}%`,
+                width: config.size,
+                height: config.size,
+                backgroundColor: config.tint || 'rgba(255, 255, 255, 0.1)',
+                borderRadius: config.borderRadius,
+            }, style]}
+        />
+    );
+};
+
+const FloatingShapesBackground = () => (
+    <View className="absolute inset-0 overflow-hidden opacity-80" pointerEvents="none">
+        {BUBBLE_CONFIGS.map((conf, i) => (
+            <AnimatedFloatingShape key={i} config={conf} />
+        ))}
+    </View>
+);
 
 // Helper to generate a consistent portrait ID from name
 const getPortraitUrl = (name: string, isMale: boolean = true) => {
@@ -389,11 +458,11 @@ export default function RatingScreen({ navigation }: any) {
                                         />
 
                                         <View className="flex-1 bg-transparent rounded-[2.4rem] relative overflow-hidden">
-                                            {/* Expo BlurView for Glass Effect */}
-                                            <BlurView intensity={80} tint="dark" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+                                            {/* CodePen Floating Shapes Background */}
+                                            <FloatingShapesBackground />
 
-                                            {/* Subtle dark overlay for readability */}
-                                            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(5, 10, 25, 0.4)' }} />
+                                            {/* Expo BlurView for Glass Effect */}
+                                            <BlurView intensity={40} tint="dark" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
 
                                             {/* Static Noise Overlay */}
                                             <Image
